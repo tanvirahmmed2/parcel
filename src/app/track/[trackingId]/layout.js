@@ -4,7 +4,6 @@ export async function generateMetadata({ params }) {
     title: `Track Parcel #${trackingId.toUpperCase()} | Percel`,
   };
 }
-
 export default function TrackerLayout({ children }) {
   return children;
 }

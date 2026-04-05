@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import {
   flexRender,
@@ -13,13 +12,11 @@ import { ArrowUpDown, Search, Filter, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import { QA_MODAL } from "./CreateParcelModal"; 
 import axios from "axios"; 
-
 export default function ParcelTable({ initialData }) {
   const [data, setData] = useState(initialData);
   const [sorting, setSorting] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
-
   const columns = [
     {
       accessorKey: "trackingId",
@@ -66,7 +63,6 @@ export default function ParcelTable({ initialData }) {
       cell: ({ row }) => <span className="text-sm text-slate-500">{new Date(row.getValue("createdAt")).toLocaleDateString()}</span>,
     },
   ];
-
   const table = useReactTable({
     data,
     columns,
@@ -81,23 +77,19 @@ export default function ParcelTable({ initialData }) {
       globalFilter,
     },
   });
-
   const refreshData = async () => {
     try {
       const res = await axios.get("/api/merchant/parcels");
       setData(res.data.parcels);
     } catch(e) {}
   };
-
   return (
     <div className="glass-panel rounded-2xl overflow-hidden mt-8">
-      
       <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40">
         <div>
           <h2 className="text-xl font-bold tracking-tight">Order Management</h2>
           <p className="text-sm text-slate-500">View and manage dispatch statuses.</p>
         </div>
-        
         <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -113,7 +105,6 @@ export default function ParcelTable({ initialData }) {
           </button>
         </div>
       </div>
-
       <div className="overflow-x-auto w-full">
         <table className="w-full text-sm text-left relative">
           <thead className="bg-slate-50/80 backdrop-blur text-slate-500 border-b border-slate-200 sticky top-0 z-10">
@@ -148,7 +139,6 @@ export default function ParcelTable({ initialData }) {
           </tbody>
         </table>
       </div>
-      
       <div className="p-4 border-t border-slate-100 flex items-center justify-between">
         <span className="text-sm text-slate-500">
           Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to {Math.min((table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize, data.length)} of {data.length}
@@ -172,7 +162,6 @@ export default function ParcelTable({ initialData }) {
           </button>
         </div>
       </div>
-
       {isModalOpen && <QA_MODAL onClose={() => setModalOpen(false)} onCreated={refreshData} />}
     </div>
   );

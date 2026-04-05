@@ -1,26 +1,22 @@
 import mongoose from "mongoose";
-
 const ParcelSchema = new mongoose.Schema(
   {
     trackingId: { type: String, unique: true, index: true },
     merchantId: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
     riderId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-
     receiverName: { type: String, required: true },
     phone: { type: String, required: true, index: true },
     address: { type: String, required: true },
     district: { type: String, required: true, index: true },
-
     codAmount: { type: Number, required: true },
     deliveryCharge: { type: Number, required: true },
-    weight: { type: Number, required: true }, // in kg
+    weight: { type: Number, required: true }, 
     deliveryType: { type: String, enum: ["Regular", "Express"], default: "Regular" },
     deliveryOtp: { type: String },
     lastLocation: {
       lat: { type: Number },
       lng: { type: Number }
     },
-
     status: { 
       type: String, 
       enum: [
@@ -35,7 +31,6 @@ const ParcelSchema = new mongoose.Schema(
       ],
       default: "Pending" 
     },
-
     history: [
       {
         status: String,
@@ -47,5 +42,4 @@ const ParcelSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
 export const Parcel = mongoose.models.Parcel || mongoose.model("Parcel", ParcelSchema);

@@ -1,15 +1,11 @@
 "use client";
-
 import { CheckCircle, XCircle, Search, UserCheck } from "lucide-react";
 import useSWR from "swr";
 import toast from "react-hot-toast";
 import axios from "axios";
-
 const fetcher = url => axios.get(url).then(res => res.data);
-
 export default function MerchantApprovals() {
   const { data: users, error, isLoading, mutate } = useSWR("/api/admin/users?role=MERCHANT", fetcher, { fallbackData: [] });
-
   const setStatus = async (id, status) => {
     try {
       const res = await axios.patch("/api/admin/users", { id, status });
@@ -19,14 +15,12 @@ export default function MerchantApprovals() {
       toast.error(e.message);
     }
   };
-
   return (
     <div className="p-8 font-sans">
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold tracking-tight">Merchant Approvals</h1>
         <p className="text-slate-500">Approve or reject new merchant applications.</p>
       </div>
-
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
          <div className="p-4 border-b bg-slate-50 relative">
             <Search className="w-5 h-5 absolute left-7 top-1/2 -translate-y-1/2 text-slate-400" />

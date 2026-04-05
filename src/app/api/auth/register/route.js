@@ -4,23 +4,18 @@ import { User } from "@/models/User";
 import bcrypt from "bcryptjs";
 import { signToken } from "@/lib/jwt";
 import { sendMail } from "@/lib/mail";
-
 export async function POST(req) {
   try {
     const data = await req.json();
     const { name, storeName, email, phone, password, role } = data;
-
     if (!email || !password || !name) {
       return new NextResponse("Missing required fields", { status: 400 });
     }
-
     await connectToDatabase();
-    
     const existing = await User.findOne({ email });
     if (existing) {
       return new NextResponse("Email already exists", { status: 409 });
     }
-
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
       name,
@@ -28,18 +23,12 @@ export async function POST(req) {
       email,
       phone,
       password: hashedPassword,
-      role: role || "MERCHANT", // Defaults to merchant
+      role: role || "MERCHANT", 
       status: "PENDING"
     });
-
     await newUser.save();
-
-    // Generate Verification Token covering their ID specifically
     const verifyToken = await signToken({ intent: "VERIFY_EMAIL", id: newUser._id.toString() });
-    
     const verificationUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/auth/verify?token=${verifyToken}`;
-    
-    // Dispatch via Brevo
     try {
       await sendMail({
         to: email,
@@ -51,9 +40,7 @@ export async function POST(req) {
     } catch(e) {
       console.warn("Could not dispatch verification email, dropping token to console: ", verificationUrl);
     }
-
     return NextResponse.json({ success: true, message: "Registered. Please verify your email." });
-
   } catch (err) {
     console.error("Registration Error:", err);
     return new NextResponse("Internal server error", { status: 500 });

@@ -1,37 +1,30 @@
 "use client";
-
 import useSWR from "swr";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Package, Truck, CheckCircle, Activity, Loader2 } from "lucide-react";
-import AdminParcelTable from "./components/AdminParcelTable";
-import axios from "axios";
-
-const fetcher = url => axios.get(url).then(res => res.data);
-
+import AdminParcelTable from "@/components/dashboard/admin/AdminParcelTable";
+import StatCard from "@/components/shared/StatCard";
+import api from "@/lib/axios";
+const fetcher = url => api.get(url).then(res => res.data.data);
 export default function AdminDashboard() {
   const { data, error, isLoading } = useSWR("/api/admin/stats", fetcher);
-
   if (isLoading) return <div className="p-8 min-h-screen flex items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-slate-400" /></div>;
   if (error || !data) return <div className="p-8 text-red-500 font-bold">Failed to load system stats.</div>;
-
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8 font-sans text-slate-900">
-      
-      {/* Header */}
+      {}
       <div>
         <h1 className="text-3xl font-extrabold tracking-tight">Command Center</h1>
         <p className="text-slate-500 mt-1">Real-time overview of the logistics network.</p>
       </div>
-
-      {/* Stats Cards */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard icon={Activity} title="Total Active" value={data.totalOrders} />
         <StatCard icon={CheckCircle} title="Delivered" value={data.delivered} className="text-emerald-600 bg-emerald-50 border-emerald-100" />
         <StatCard icon={Truck} title="In Transit" value={data.transit} className="text-blue-600 bg-blue-50 border-blue-100" />
         <StatCard icon={Package} title="Pending" value={data.pending} />
       </div>
-
-      {/* Charting Sector */}
+      {}
       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
         <h2 className="text-lg font-bold mb-6">Delivery Volume Trends</h2>
         <div className="h-72 w-full">
@@ -49,8 +42,7 @@ export default function AdminDashboard() {
           </ResponsiveContainer>
         </div>
       </div>
-
-      {/* Live Master Data Table */}
+      {}
       <div>
         <div className="mb-4">
           <h2 className="text-lg font-bold">Active Operations</h2>
@@ -58,21 +50,6 @@ export default function AdminDashboard() {
         </div>
         <AdminParcelTable />
       </div>
-
     </div>
   );
-}
-
-function StatCard({ icon: Icon, title, value, className = "text-slate-900 bg-white border-slate-200" }) {
-  return (
-    <div className={`p-6 rounded-2xl border shadow-sm flex items-center gap-4 ${className}`}>
-      <div className={`p-3 rounded-xl bg-white shadow-sm border border-slate-100`}>
-        <Icon className="w-6 h-6" />
-      </div>
-      <div>
-        <p className="text-sm font-medium opacity-80">{title}</p>
-        <p className="text-3xl font-extrabold tracking-tight">{value}</p>
-      </div>
-    </div>
-  )
 }

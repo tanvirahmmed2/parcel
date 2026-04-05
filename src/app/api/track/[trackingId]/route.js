@@ -7,13 +7,13 @@ export async function GET(req, { params }) {
     const { trackingId } = await params;
     await connectToDatabase();
 
-    const parcel = await Parcel.findOne({ trackingId }).select("-deliveryOtp -history.updatedBy");
+    const parcel = await Parcel.findOne({ trackingId }).select("-deliveryOtp -history.updatedBy").lean();
     if (!parcel) {
-      return new NextResponse("Not Found", { status: 404 });
+      return NextResponse.json({ success: false, message: "Not Found", data: null }, { status: 404 });
     }
 
-    return NextResponse.json(parcel);
+    return NextResponse.json({ success: true, message: "Parcel found", data: parcel });
   } catch (error) {
-    return new NextResponse("Internal server error", { status: 500 });
+    return NextResponse.json({ success: false, message: "Internal server error", data: null }, { status: 500 });
   }
 }

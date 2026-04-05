@@ -3,43 +3,31 @@ import { connectToDatabase } from "@/lib/db";
 import { User } from "@/models/User";
 import { CheckCircle, AlertCircle } from "lucide-react";
 import Link from "next/link";
-
 export default async function VerifyEmailPage({ searchParams }) {
   const token = await searchParams?.token;
-
   if (!token) {
     return <ResultState isError message="No verification token provided." />;
   }
-
   const payload = await verifyToken(token);
-
   if (!payload || payload.intent !== "VERIFY_EMAIL" || !payload.id) {
     return <ResultState isError message="Invalid or expired verification token." />;
   }
-
   try {
     await connectToDatabase();
     const user = await User.findById(payload.id);
-    
     if (!user) {
       return <ResultState isError message="User not found in system." />;
     }
-
     if (user.status === "ACTIVE") {
       return <ResultState isError={false} message="Account is already active." />
     }
-
-    // Set to PENDING specifically for admin approval. 
-    // They are just email verified now. 
     user.emailVerified = new Date();
     await user.save();
-
     return <ResultState isError={false} message="Email perfectly verified. Your account is now in the queue for Admin approval!" />;
   } catch(e) {
     return <ResultState isError message="Database connection interrupted." />;
   }
 }
-
 function ResultState({ isError, message }) {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">

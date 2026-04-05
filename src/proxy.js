@@ -1,13 +1,14 @@
 import { jwtVerify } from "jose";
 import { NextResponse } from "next/server";
 
-const secretKey = process.env.NEXTAUTH_SECRET || "fallback_secret_key";
+const secretKey = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || "fallback_secret_key";
 const encodedKey = new TextEncoder().encode(secretKey);
 
-export async function middleware(req) {
+export async function proxy(req) {
   const { nextUrl, cookies } = req;
   const baseUrl = nextUrl.origin;
   const sessionToken = cookies.get("session")?.value;
+  const pathname = nextUrl.pathname;
 
   let payload = null;
   if (sessionToken) {
@@ -19,27 +20,54 @@ export async function middleware(req) {
     }
   }
 
-  // Dashboard Protection
-  if (nextUrl.pathname.startsWith("/admin")) {
-    if (!payload) return NextResponse.redirect(`${baseUrl}/auth/login?callbackUrl=${nextUrl.pathname}`);
-    if (payload.role !== "ADMIN") return NextResponse.redirect(`${baseUrl}/unauthorized`);
+  if (pathname.startsWith("/auth/login") || pathname.startsWith("/auth/register")) {
+    if (payload) {
+      const target = payload.role === "ADMIN" ? "/admin" : payload.role === "MERCHANT" ? "/merchant" : "/rider";
+      return NextResponse.redirect(`${baseUrl}${target}`);
+    }
+    return NextResponse.next();
   }
 
-  if (nextUrl.pathname.startsWith("/merchant")) {
-    if (!payload) return NextResponse.redirect(`${baseUrl}/auth/login?callbackUrl=${nextUrl.pathname}`);
-    if (payload.role !== "MERCHANT" && payload.role !== "ADMIN") return NextResponse.redirect(`${baseUrl}/unauthorized`);
-    if (payload.role === "MERCHANT" && payload.status === "PENDING") return NextResponse.redirect(`${baseUrl}/account-pending`);
-  }
+  if (
+    pathname.startsWith("/admin") || 
+    pathname.startsWith("/merchant") || 
+    pathname.startsWith("/rider") || 
+    pathname.startsWith("/api/admin")
+  ) {
+    if (!payload) {
+      return NextResponse.redirect(`${baseUrl}/auth/login?callbackUrl=${encodeURIComponent(pathname)}`);
+    }
 
-  if (nextUrl.pathname.startsWith("/rider")) {
-    if (!payload) return NextResponse.redirect(`${baseUrl}/auth/login?callbackUrl=${nextUrl.pathname}`);
-    if (payload.role !== "RIDER" && payload.role !== "ADMIN") return NextResponse.redirect(`${baseUrl}/unauthorized`);
-    if (payload.status === "PENDING") return NextResponse.redirect(`${baseUrl}/account-pending`);
+    if (payload.role !== "ADMIN" && payload.status === "PENDING") {
+      if (!pathname.startsWith("/account-pending")) {
+         return NextResponse.redirect(`${baseUrl}/account-pending`);
+      }
+    }
+
+    if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
+      if (payload.role !== "ADMIN") return NextResponse.redirect(`${baseUrl}/unauthorized`);
+    }
+
+    if (pathname.startsWith("/merchant") && payload.role !== "MERCHANT" && payload.role !== "ADMIN") {
+       return NextResponse.redirect(`${baseUrl}/unauthorized`);
+    }
+
+    if (pathname.startsWith("/rider") && payload.role !== "RIDER" && payload.role !== "ADMIN") {
+       return NextResponse.redirect(`${baseUrl}/unauthorized`);
+    }
   }
 
   return NextResponse.next();
 }
 
+export { proxy as middleware };
+
 export const config = {
-  matcher: ["/admin/:path*", "/merchant/:path*", "/rider/:path*"],
+  matcher: [
+    "/admin/:path*", 
+    "/merchant/:path*", 
+    "/rider/:path*", 
+    "/api/admin/:path*",
+    "/auth/:path*"
+  ],
 };

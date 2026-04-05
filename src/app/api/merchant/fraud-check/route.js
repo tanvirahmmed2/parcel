@@ -1,51 +1,56 @@
-import { auth } from "@/auth";
+import { requireAuth } from "@/lib/auth-shield";
 import { connectToDatabase } from "@/lib/db";
 import { Parcel } from "@/models/Parcel";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
   try {
-    const session = await auth();
-    if (!session || session.user.role !== "MERCHANT") {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+    await requireAuth(["MERCHANT"]);
 
     const { searchParams } = new URL(req.url);
     const phone = searchParams.get("phone");
 
     if (!phone) {
-      return new NextResponse("Phone parameter required", { status: 400 });
+      return NextResponse.json({ success: false, message: "Phone parameter required" }, { status: 400 });
     }
 
     await connectToDatabase();
 
-    const ordersWithPhone = await Parcel.find({ phone }).select("status");
+    const ordersWithPhone = await Parcel.find({ phone }).select("status").lean();
 
     const totalOrders = ordersWithPhone.length;
     let successfulDeliveries = 0;
     let failedDeliveries = 0;
 
     ordersWithPhone.forEach(p => {
-      if (p.status === "Delivered" || p.status === "Partial Delivered") {
+
+      if (p.status === "Delivered" || p.status === "Partial Delivered" || p.status === "DELIVERED") {
         successfulDeliveries++;
-      } else if (p.status === "Returned") {
+      } else if (p.status === "Returned" || p.status === "REFUSED") {
+
         failedDeliveries++;
       }
     });
 
-    // In a real system, we'd calculate across all merchants.
     const successRate = totalOrders > 0 ? (successfulDeliveries / totalOrders) * 100 : 100;
     const isHighRisk = totalOrders > 0 && successRate < 50;
 
     return NextResponse.json({
-      totalOrders,
-      successfulDeliveries,
-      failedDeliveries,
-      successRate: successRate.toFixed(2),
-      isHighRisk
+      success: true,
+      message: "Fraud check completed.",
+      data: {
+        totalOrders,
+        successfulDeliveries,
+        failedDeliveries,
+        successRate: successRate.toFixed(2),
+        isHighRisk
+      }
     });
   } catch (error) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") {
+      return NextResponse.json({ success: false, message: "Unauthorized", data: null }, { status: 401 });
+    }
     console.error("Fraud Check Error:", error);
-    return new NextResponse("Internal server error", { status: 500 });
+    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }

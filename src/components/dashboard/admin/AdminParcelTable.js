@@ -1,37 +1,28 @@
 "use client";
-
 import { useState } from "react";
 import useSWR from "swr";
 import { toast } from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import axios from "axios";
-
 const fetcher = url => axios.get(url).then(res => res.data);
-
 export default function AdminParcelTable() {
   const { data, error, isLoading, mutate } = useSWR("/api/admin/parcels/bulk", fetcher);
   const [selectedIds, setSelectedIds] = useState([]);
   const [isUpdating, setIsUpdating] = useState(false);
-
   if (isLoading) return <div className="p-8 h-64 flex items-center justify-center"><Loader2 className="animate-spin w-8 h-8 text-black" /></div>;
   if (error) return <div className="p-8 text-red-500 font-bold">Failed to load system parcels.</div>;
-
   const handleSelectAll = (e) => {
     if (e.target.checked) setSelectedIds(data.parcels.map((p) => p._id));
     else setSelectedIds([]);
   };
-
   const handleSelect = (id) => {
     setSelectedIds((prev) => 
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
   };
-
   const updateStatus = async (status) => {
     if (selectedIds.length === 0) return toast.error("Select parcels first");
     setIsUpdating(true);
-    
-    // Instead of bulk patching which we had previously under /api/admin/parcels/bulk
     try {
       const res = await axios.patch("/api/admin/parcels/bulk", { ids: selectedIds, status });
       toast.success(`Updated ${selectedIds.length} parcels to ${status}`);
@@ -43,7 +34,6 @@ export default function AdminParcelTable() {
       setIsUpdating(false);
     }
   };
-
   return (
     <div className="glass-panel overflow-hidden rounded-xl">
       <div className="p-4 border-b bg-white/50 backdrop-blur-sm flex items-center justify-between">
@@ -56,7 +46,6 @@ export default function AdminParcelTable() {
           <button disabled={isUpdating || selectedIds.length === 0} onClick={() => updateStatus("Delivered")} className="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition disabled:opacity-50 shadow-md">Force Complete</button>
         </div>
       </div>
-      
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm whitespace-nowrap">
           <thead className="bg-[#f8fafc]/80 backdrop-blur-sm text-slate-500 border-b border-slate-100 sticky top-0 z-10">

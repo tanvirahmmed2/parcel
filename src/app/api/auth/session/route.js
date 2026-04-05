@@ -1,6 +1,5 @@
 import { getSessionPayload } from "@/lib/jwt";
 import { NextResponse } from "next/server";
-
 export async function GET() {
   const session = await getSessionPayload();
   if (!session) {

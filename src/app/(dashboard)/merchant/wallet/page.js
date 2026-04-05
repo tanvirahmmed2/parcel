@@ -1,30 +1,23 @@
 "use client";
-
 import useSWR from "swr";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { DollarSign, ArrowUpRight, Clock } from "lucide-react";
 import axios from "axios";
-
 const fetcher = (url) => axios.get(url).then((res) => res.data);
-
 export default function MerchantWallet() {
   const { data, error, isLoading, mutate } = useSWR("/api/merchant/withdrawals", fetcher);
   const [amount, setAmount] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   if (isLoading) return <div className="p-8"><div className="animate-pulse h-32 bg-gray-200 rounded-xl mb-8"></div></div>;
   if (error) return <div className="p-8 text-danger">Failed to load wallet stats.</div>;
-
-  const { stats, withdrawals } = data;
-
+  const { stats, withdrawals } = data.data;
   const handleWithdrawal = async (e) => {
     e.preventDefault();
     const val = parseFloat(amount);
     if (!val || val <= 0 || val > stats.availableBalance) {
       return toast.error("Invalid amount. Check your available balance.");
     }
-
     setIsSubmitting(true);
     try {
       const res = await axios.post("/api/merchant/withdrawals", { amount: val });
@@ -37,11 +30,9 @@ export default function MerchantWallet() {
       setIsSubmitting(false);
     }
   };
-
   return (
     <div className="p-8 max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold mb-8">Financial Wallet</h1>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
          <div className="bg-primary text-white p-6 rounded-xl shadow-lg">
             <h3 className="text-primary-light font-medium mb-2">Available Balance</h3>
@@ -56,7 +47,6 @@ export default function MerchantWallet() {
             <p className="text-2xl font-bold text-gray-900">৳{stats.pendingWithdrawalTotal.toFixed(2)}</p>
          </div>
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1">
            <form onSubmit={handleWithdrawal} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
@@ -82,7 +72,6 @@ export default function MerchantWallet() {
               </button>
            </form>
         </div>
-
         <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="p-4 border-b bg-gray-50">
              <h2 className="text-lg font-semibold flex items-center"><Clock className="w-5 h-5 mr-2 text-gray-500"/> Withdrawal History</h2>

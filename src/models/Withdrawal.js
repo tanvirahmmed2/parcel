@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const WithdrawalSchema = new mongoose.Schema(
   {
     merchantId: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
@@ -15,5 +14,4 @@ const WithdrawalSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
 export const Withdrawal = mongoose.models.Withdrawal || mongoose.model("Withdrawal", WithdrawalSchema);

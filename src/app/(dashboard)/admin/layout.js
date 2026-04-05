@@ -1,10 +1,13 @@
-import { isAdmin } from "@/lib/auth-guards";
+import { requireAuth } from "@/lib/auth-shield";
+
+export const metadata = {
+  title: "Admin Dashboard | Percel",
+  description: "Global system control and logistics tracking.",
+};
 
 export default async function AdminLayout({ children }) {
-  // This physically blocks layout rendering on the server
-  // returning un-authenticated/un-authorized instantly natively hitting MongoDB through RBAC
-  const user = await isAdmin(); 
-  
+  await requireAuth(["ADMIN"]); 
+
   return (
     <>
       {children}

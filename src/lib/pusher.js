@@ -1,7 +1,5 @@
 import PusherServer from 'pusher';
 import PusherClient from 'pusher-js';
-
-// Server instance (for typical API route use)
 export const pusherServer = new PusherServer({
   appId: process.env.PUSHER_APP_ID || "app-id",
   key: process.env.NEXT_PUBLIC_PUSHER_KEY || "key",
@@ -9,8 +7,6 @@ export const pusherServer = new PusherServer({
   cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER || "ap2",
   useTLS: true,
 });
-
-// Client instance provider
 export const getPusherClient = () => {
   return new PusherClient(process.env.NEXT_PUBLIC_PUSHER_KEY || "key", {
     cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER || "ap2",

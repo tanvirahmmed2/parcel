@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { requireAuth } from "@/lib/auth-shield";
 import { connectToDatabase } from "@/lib/db";
 import { Withdrawal } from "@/models/Withdrawal";
 import { Parcel } from "@/models/Parcel";
@@ -6,26 +6,22 @@ import { NextResponse } from "next/server";
 
 export async function GET(req) {
   try {
-    const session = await auth();
-    if (!session || session.user.role !== "MERCHANT") {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+    const user = await requireAuth(["MERCHANT"]);
 
     await connectToDatabase();
-    
-    // Calculate total COD and delivery charges
-    const deliveredParcels = await Parcel.find({ merchantId: session.user.id, status: "Delivered" });
-    
+
+    const deliveredParcels = await Parcel.find({ merchantId: user.id, status: "Delivered" }).lean();
+
     let totalCOD = 0;
     let totalDeliveryCharge = 0;
     deliveredParcels.forEach(p => {
-      totalCOD += p.codAmount;
-      totalDeliveryCharge += p.deliveryCharge;
+      totalCOD += p.codAmount || 0;
+      totalDeliveryCharge += p.deliveryCharge || 0;
     });
 
     const netEarnings = totalCOD - totalDeliveryCharge;
 
-    const withdrawals = await Withdrawal.find({ merchantId: session.user.id }).sort({ createdAt: -1 });
+    const withdrawals = await Withdrawal.find({ merchantId: user.id }).sort({ createdAt: -1 }).lean();
 
     let withdrawnTotal = 0;
     let pendingWithdrawalTotal = 0;
@@ -38,49 +34,67 @@ export async function GET(req) {
     const availableBalance = netEarnings - withdrawnTotal - pendingWithdrawalTotal;
 
     return NextResponse.json({
-      stats: {
-        totalCOD,
-        totalDeliveryCharge,
-        netEarnings,
-        withdrawnTotal,
-        pendingWithdrawalTotal,
-        availableBalance
-      },
-      withdrawals
+      success: true,
+      message: "Ledger fetched.",
+      data: {
+        stats: {
+          totalCOD,
+          totalDeliveryCharge,
+          netEarnings,
+          withdrawnTotal,
+          pendingWithdrawalTotal,
+          availableBalance
+        },
+        withdrawals
+      }
     });
 
   } catch (error) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") {
+      return NextResponse.json({ success: false, message: "Unauthorized", data: null }, { status: 401 });
+    }
     console.error("Fetch withdrawals error:", error);
-    return new NextResponse("Internal server error", { status: 500 });
+    return NextResponse.json({ success: false, message: "Internal server error", data: null }, { status: 500 });
   }
 }
 
 export async function POST(req) {
   try {
-    const session = await auth();
-    if (!session || session.user.role !== "MERCHANT") {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+    const user = await requireAuth(["MERCHANT"]);
 
     const { amount } = await req.json();
     if (!amount || amount <= 0) {
-       return new NextResponse("Invalid amount", { status: 400 });
+       return NextResponse.json({ success: false, message: "Invalid amount", data: null }, { status: 400 });
     }
 
     await connectToDatabase();
-    
-    // Validate if enough balance exists
-    // (In production, you'd calculate available balance here again before saving to prevent race conditions)
+
+    const deliveredParcels = await Parcel.find({ merchantId: user.id, status: "Delivered" }).lean();
+    let netEarnings = 0;
+    deliveredParcels.forEach(p => netEarnings += (p.codAmount || 0) - (p.deliveryCharge || 0));
+
+    const withdrawals = await Withdrawal.find({ merchantId: user.id }).lean();
+    let totalDeductions = 0;
+    withdrawals.forEach(w => totalDeductions += w.amount);
+
+    const availableBalance = netEarnings - totalDeductions;
+
+    if (amount > availableBalance) {
+      return NextResponse.json({ success: false, message: "Insufficient balance", data: null }, { status: 400 });
+    }
 
     const w = await Withdrawal.create({
-      merchantId: session.user.id,
+      merchantId: user.id,
       amount,
       status: "PENDING"
     });
 
-    return NextResponse.json(w, { status: 201 });
+    return NextResponse.json({ success: true, message: "Withdrawal requested", data: w }, { status: 201 });
   } catch (error) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") {
+      return NextResponse.json({ success: false, message: "Unauthorized", data: null }, { status: 401 });
+    }
     console.error("Create withdrawal error:", error);
-    return new NextResponse("Internal server error", { status: 500 });
+    return NextResponse.json({ success: false, message: "Internal server error", data: null }, { status: 500 });
   }
 }
