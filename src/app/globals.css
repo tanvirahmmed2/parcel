@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc; /* Arctic white / slate-50 */
+  --foreground: #0f172a; /* Deep navy / slate-900 */
 }
 
 @theme inline {
@@ -10,17 +10,31 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  
+  /* Deep Navy & Arctic White Core */
+  --color-primary: #0f172a; /* Navy */
+  --color-primary-light: #1e293b;
+  --color-accent: #3b82f6; /* Vivid blue */
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-surface: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #020617; /* Slate 950 */
+    --foreground: #f8fafc;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
 }
