@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { connectToDatabase } from "./db";
 import { User } from "@/models/User";
 
-const secretKey = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || "fallback_secret_key";
+const secretKey = process.env.JWT_SECRET
 const encodedKey = new TextEncoder().encode(secretKey);
 
 export async function verifySession() {

@@ -12,11 +12,11 @@ export async function POST(req) {
     await connectToDatabase();
     const user = await User.findOne({ email });
     if (!user) {
-      return new NextResponse("Invalid credentials", { status: 401 });
+      return new NextResponse("No account found with this email", { status: 401 });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return new NextResponse("Invalid credentials", { status: 401 });
+      return new NextResponse("Incorrect password", { status: 401 });
     }
     if (user.role !== "ADMIN" && user.status !== "ACTIVE") {
       if (user.status === "SUSPENDED") {
@@ -30,8 +30,8 @@ export async function POST(req) {
       role: user.role,
       status: user.status
     };
-    const token = await createSessionCookie(payload);
-    return NextResponse.json({ success: true, role: user.role, status: user.status });
+    await createSessionCookie(payload);
+    return NextResponse.json({ success: true,message:'Successfully logged in', role: user.role, status: user.status });
   } catch (err) {
     console.error("Login API Error", err);
     return new NextResponse("Internal Server Error", { status: 500 });
