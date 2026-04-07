@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
-import { LayoutDashboard, Package, LogOut, FileSpreadsheet, Building2, User as UserIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { LayoutDashboard, Package, LogOut, FileSpreadsheet, Building2, User as UserIcon, ChevronLeft, ChevronRight, Bike, Boxes, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 
@@ -18,18 +18,23 @@ export default function Sidebar({ user }) {
     ...(role === "MERCHANT" ? [
       { href: "/merchant", icon: LayoutDashboard, label: "Overview" },
       { href: "/merchant/parcels", icon: Package, label: "My Parcels" },
+      { href: "/merchant/business", icon: Building2, label: "Business Hub" },
       { href: "/merchant/wallet", icon: FileSpreadsheet, label: "Wallet" },
     ] : []),
     ...(role === "ADMIN" ? [
       { href: "/admin", icon: LayoutDashboard, label: "Command Center" },
       { href: "/admin/merchants", icon: Building2, label: "Merchants" },
+      { href: "/admin/riders", icon: Bike, label: "Riders" },
+      { href: "/admin/parcels", icon: Boxes, label: "All Parcels" },
+      { href: "/admin/parcels/pending", icon: Clock, label: "Pending Parcels" },
       { href: "/admin/withdrawals", icon: FileSpreadsheet, label: "Withdrawals" },
-      { href: "/admin/map", icon: UserIcon, label: "Rider Map" },
+      { href: "/admin/map", icon: UserIcon, label: "Map" },
     ] : []),
     ...(role === "RIDER" ? [
       { href: "/rider", icon: Package, label: "My Deliveries" },
       { href: "/rider/scan", icon: LayoutDashboard, label: "Scanner" },
     ] : []),
+    { href: "/profile", icon: UserIcon, label: "My Profile" },
   ];
 
   return (

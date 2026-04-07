@@ -25,7 +25,7 @@ async function runSeed() {
     const passwordHash = await bcrypt.hash("password123", 10);
 
     // 1 Admin
-    const admin = await User.create({
+    await User.create({
       name: "Super Admin",
       email: "admin@logistics.com",
       password: passwordHash,

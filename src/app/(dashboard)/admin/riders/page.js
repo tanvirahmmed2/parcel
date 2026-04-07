@@ -3,13 +3,16 @@ import { CheckCircle, XCircle, Search, UserCheck, Trash } from "lucide-react";
 import useSWR from "swr";
 import toast from "react-hot-toast";
 import axios from "axios";
+
 const fetcher = url => axios.get(url).then(res => res.data);
-export default function MerchantApprovals() {
-  const { data: users, error, isLoading, mutate } = useSWR("/api/admin/users?role=MERCHANT", fetcher, { fallbackData: [] });
+
+export default function RiderManagement() {
+  const { data: users, error, isLoading, mutate } = useSWR("/api/admin/users?role=RIDER", fetcher, { fallbackData: [] });
+
   const setStatus = async (id, status) => {
     try {
-      const res = await axios.patch("/api/admin/users", { id, status });
-      toast.success(`Merchant ${status}`);
+      await axios.patch("/api/admin/users", { id, status });
+      toast.success(`Rider ${status}`);
       mutate();
     } catch(e) {
       toast.error(e.message);
@@ -20,17 +23,18 @@ export default function MerchantApprovals() {
     if (!confirm("Are you sure you want to permanently delete this account?")) return;
     try {
       await axios.delete(`/api/admin/users?id=${id}`);
-      toast.success("Merchant deleted");
+      toast.success("Rider deleted");
       mutate();
     } catch(e) {
       toast.error(e.message);
     }
   };
+
   return (
     <div className="p-8 font-sans">
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold tracking-tight">Merchant Approvals</h1>
-        <p className="text-slate-500">Approve or reject new merchant applications.</p>
+        <h1 className="text-3xl font-extrabold tracking-tight">Rider Management</h1>
+        <p className="text-slate-500">Manage, approve, or suspend rider applications.</p>
       </div>
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
          <div className="p-4 border-b bg-slate-50 relative">
@@ -40,7 +44,7 @@ export default function MerchantApprovals() {
          <table className="w-full text-left">
            <thead className="bg-slate-50 border-b border-slate-100 text-xs uppercase tracking-wider text-slate-500">
              <tr>
-               <th className="p-4 font-semibold">Store / Name</th>
+               <th className="p-4 font-semibold">Name / Vehicle</th>
                <th className="p-4 font-semibold">Email</th>
                <th className="p-4 font-semibold">Status</th>
                <th className="p-4 font-semibold text-right">Actions</th>
@@ -50,7 +54,7 @@ export default function MerchantApprovals() {
              {isLoading ? <tr><td colSpan="4" className="text-center p-8 text-slate-400 font-medium">Loading network...</td></tr> : 
               users.map(u => (
                <tr key={u._id} className="hover:bg-slate-50 transition">
-                 <td className="p-4 font-medium"><UserCheck className="w-4 h-4 inline-block mr-2 text-slate-400"/> {u.storeName || u.name}</td>
+                 <td className="p-4 font-medium"><UserCheck className="w-4 h-4 inline-block mr-2 text-slate-400"/> {u.name}</td>
                  <td className="p-4 text-slate-500">{u.email}</td>
                  <td className="p-4">
                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${u.status === 'ACTIVE' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>

@@ -68,3 +68,30 @@ export async function POST(req) {
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }
+
+export async function PATCH(req) {
+  try {
+    const session = await auth();
+    if (!session) return new NextResponse("Unauthorized", { status: 401 });
+    
+    const data = await req.json();
+    await connectToDatabase();
+    
+    const user = await User.findById(session.user.id);
+    if (!user) return new NextResponse("Not Found", { status: 404 });
+    
+    if (data.name) user.name = data.name;
+    if (data.phone) user.phone = data.phone;
+    if (data.storeName !== undefined) user.storeName = data.storeName;
+    if (data.bankDetails) {
+      user.bankDetails = { ...user.bankDetails, ...data.bankDetails };
+    }
+    
+    await user.save();
+    return NextResponse.json({ success: true, user });
+  } catch(e) {
+    if (e.message === "NEXT_REDIRECT") throw e;
+    console.error("Update profile error:", e);
+    return new NextResponse("Internal server error", { status: 500 });
+  }
+}
