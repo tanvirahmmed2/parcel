@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import { QA_MODAL } from "./CreateParcelModal"; 
 import axios from "axios"; 
 export default function ParcelTable({ initialData }) {
-  const [data, setData] = useState(initialData);
+  const [data, setData] = useState(initialData || []);
   const [sorting, setSorting] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
@@ -80,7 +80,7 @@ export default function ParcelTable({ initialData }) {
   const refreshData = async () => {
     try {
       const res = await axios.get("/api/merchant/parcels");
-      setData(res.data.parcels);
+      setData(res.data.parcels || []);
     } catch(e) {}
   };
   return (
@@ -141,7 +141,7 @@ export default function ParcelTable({ initialData }) {
       </div>
       <div className="p-4 border-t border-slate-100 flex items-center justify-between">
         <span className="text-sm text-slate-500">
-          Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to {Math.min((table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize, data.length)} of {data.length}
+          Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to {Math.min((table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize, data?.length || 0)} of {data?.length || 0}
         </span>
         <div className="flex gap-2">
           <button 

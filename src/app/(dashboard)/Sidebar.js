@@ -91,7 +91,7 @@ export default function Sidebar({ user }) {
           </div>
           {!collapsed && <div className="text-sm font-medium truncate text-white whitespace-nowrap">{name}</div>}
         </div>
-        <button onClick={() => { axios.post("/api/auth/logout").then(()=> router.push("/auth/login")) }} className={`w-full flex items-center gap-2 bg-slate-800 hover:bg-rose-900 hover:text-rose-100 py-2.5 rounded-xl transition-colors ${collapsed ? 'justify-center px-0' : 'justify-center px-4'}`} title={collapsed ? "Log Out" : ""}>
+        <button onClick={() => { axios.delete("/api/user/session").then(()=> window.location.replace("/login")) }} className={`w-full flex items-center gap-2 bg-slate-800 hover:bg-rose-900 hover:text-rose-100 py-2.5 rounded-xl transition-colors ${collapsed ? 'justify-center px-0' : 'justify-center px-4'}`} title={collapsed ? "Log Out" : ""}>
           <LogOut className="w-4 h-4 shrink-0" />
           {!collapsed && <span className="font-medium text-sm">Log Out</span>}
         </button>

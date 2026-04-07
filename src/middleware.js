@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 const secretKey = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || "fallback_secret_key";
 const encodedKey = new TextEncoder().encode(secretKey);
 
-export async function proxy(req) {
+export async function middleware(req) {
   const { nextUrl, cookies } = req;
   const baseUrl = nextUrl.origin;
   const sessionToken = cookies.get("session")?.value;
@@ -20,7 +20,7 @@ export async function proxy(req) {
     }
   }
 
-  if (pathname.startsWith("/auth/login") || pathname.startsWith("/auth/register")) {
+  if (pathname.startsWith("/login") || pathname.startsWith("/register")) {
     if (payload) {
       const target = payload.role === "ADMIN" ? "/admin" : payload.role === "MERCHANT" ? "/merchant" : "/rider";
       return NextResponse.redirect(`${baseUrl}${target}`);
@@ -35,7 +35,7 @@ export async function proxy(req) {
     pathname.startsWith("/api/admin")
   ) {
     if (!payload) {
-      return NextResponse.redirect(`${baseUrl}/auth/login?callbackUrl=${encodeURIComponent(pathname)}`);
+      return NextResponse.redirect(`${baseUrl}/login?callbackUrl=${encodeURIComponent(pathname)}`);
     }
 
     if (payload.role !== "ADMIN" && payload.status === "PENDING") {
@@ -60,7 +60,6 @@ export async function proxy(req) {
   return NextResponse.next();
 }
 
-export { proxy as middleware };
 
 export const config = {
   matcher: [
@@ -68,6 +67,7 @@ export const config = {
     "/merchant/:path*", 
     "/rider/:path*", 
     "/api/admin/:path*",
-    "/auth/:path*"
+    "/login",
+    "/register"
   ],
 };

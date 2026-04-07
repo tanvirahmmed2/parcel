@@ -31,7 +31,7 @@ export default function Invoice({ parcel }) {
       });
 
       pdf.addImage(imgData, "PNG", 0, 0, 101.6, 152.4);
-      pdf.save(`Percel_4x6_Label_${parcel.trackingId}.pdf`);
+      pdf.save(`Parcel_4x6_Label_${parcel.trackingId}.pdf`);
       toast.success("Shipping label generated successfully!");
     } catch (e) {
       console.error(e);
@@ -64,7 +64,7 @@ export default function Invoice({ parcel }) {
           {}
           <div className="flex justify-between items-end border-b-2 border-black pb-2 mb-4">
             <div>
-              <h1 className="text-2xl font-black tracking-tighter leading-none">PERCEL.</h1>
+              <h1 className="text-2xl font-black tracking-tighter leading-none">PARCEL.</h1>
               <p className="text-[10px] font-bold mt-1 uppercase">Standard Carrier</p>
             </div>
             <div className="text-right">
@@ -98,7 +98,7 @@ export default function Invoice({ parcel }) {
           <div className="absolute bottom-4 left-4 right-4 flex flex-col items-center border-t-2 border-black pt-4">
              <QRCodeSVG value={parcel._id || parcel.trackingId} size={110} level="H" />
              <p className="mt-2 text-xs font-mono font-bold tracking-[0.2em]">{parcel.trackingId}</p>
-             <p className="text-[8px] uppercase mt-2 font-bold text-center">Scan to Track or Update Status via Percel App</p>
+             <p className="text-[8px] uppercase mt-2 font-bold text-center">Scan to Track or Update Status via Parcel App</p>
           </div>
 
         </div>

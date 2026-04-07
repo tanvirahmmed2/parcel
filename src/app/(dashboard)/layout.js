@@ -2,8 +2,8 @@ import { requireAuth } from "@/lib/auth-shield";
 import Sidebar from "./Sidebar";
 
 export const metadata = {
-  title: "Dashboard | Percel",
-  description: "Percel Enterprise Portal",
+  title: "Dashboard | Parcel",
+  description: "Parcel Enterprise Portal",
 };
 
 export default async function DashboardLayout({ children }) {

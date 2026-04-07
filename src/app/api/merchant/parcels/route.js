@@ -59,7 +59,7 @@ export async function GET(req) {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .exec();
+      .lean();
     const total = await Parcel.countDocuments(query);
     return NextResponse.json({
       parcels,

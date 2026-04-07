@@ -4,15 +4,16 @@ import useSWR from "swr";
 import { toast } from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import axios from "axios";
-const fetcher = url => axios.get(url).then(res => res.data);
+const fetcher = url => axios.get(url).then(res => res.data.data);
 export default function AdminParcelTable() {
   const { data, error, isLoading, mutate } = useSWR("/api/admin/parcels/bulk", fetcher);
+  const parcels = data?.parcels || [];
   const [selectedIds, setSelectedIds] = useState([]);
   const [isUpdating, setIsUpdating] = useState(false);
   if (isLoading) return <div className="p-8 h-64 flex items-center justify-center"><Loader2 className="animate-spin w-8 h-8 text-black" /></div>;
   if (error) return <div className="p-8 text-red-500 font-bold">Failed to load system parcels.</div>;
   const handleSelectAll = (e) => {
-    if (e.target.checked) setSelectedIds(data.parcels.map((p) => p._id));
+    if (e.target.checked) setSelectedIds(parcels.map((p) => p._id));
     else setSelectedIds([]);
   };
   const handleSelect = (id) => {
@@ -50,7 +51,7 @@ export default function AdminParcelTable() {
         <table className="w-full text-left text-sm whitespace-nowrap">
           <thead className="bg-[#f8fafc]/80 backdrop-blur-sm text-slate-500 border-b border-slate-100 sticky top-0 z-10">
             <tr>
-              <th className="p-4"><input type="checkbox" onChange={handleSelectAll} checked={data?.parcels?.length > 0 && selectedIds.length === data.parcels.length} className="rounded border-slate-300 pointer" /></th>
+              <th className="p-4"><input type="checkbox" onChange={handleSelectAll} checked={parcels.length > 0 && selectedIds.length === parcels.length} className="rounded border-slate-300 pointer" /></th>
               <th className="p-4 font-semibold uppercase tracking-wider text-xs">Tracking ID</th>
               <th className="p-4 font-semibold uppercase tracking-wider text-xs">Merchant</th>
               <th className="p-4 font-semibold uppercase tracking-wider text-xs">Customer</th>
@@ -59,7 +60,7 @@ export default function AdminParcelTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 text-slate-700">
-            {data.parcels.map((p) => (
+            {parcels.map((p) => (
               <tr key={p._id} className="hover:bg-slate-50 transition-colors">
                   <td className="p-4"><input type="checkbox" checked={selectedIds.includes(p._id)} onChange={() => handleSelect(p._id)}/></td>
                   <td className="p-4 font-mono font-medium text-xs bg-slate-100 px-2 py-1 rounded inline-block mt-3 ml-2">{p.trackingId}</td>
@@ -73,7 +74,7 @@ export default function AdminParcelTable() {
                   </td>
               </tr>
             ))}
-            {data.parcels.length === 0 && <tr><td colSpan="6" className="p-12 text-center text-slate-500">No active parcels.</td></tr>}
+            {parcels.length === 0 && <tr><td colSpan="6" className="p-12 text-center text-slate-500">No active parcels.</td></tr>}
           </tbody>
         </table>
       </div>

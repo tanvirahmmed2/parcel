@@ -5,7 +5,7 @@ export async function sendMail({ to, subject, htmlContent }) {
     return true;
   }
   const payload = {
-    sender: { name: "Percel Logistics", email: "noreply@percel.local" },
+    sender: { name: "Parcel Logistics", email: "noreply@parcel.local" },
     to: [{ email: to }],
     subject,
     htmlContent
@@ -19,7 +19,6 @@ export async function sendMail({ to, subject, htmlContent }) {
       }
     });
     const data = res.data;
-    );
     return data;
   } catch (error) {
     console.error("Error sending email", error);
@@ -29,21 +28,21 @@ export async function sendMail({ to, subject, htmlContent }) {
 export async function sendWelcomeEmail(email, name) {
   return sendMail({
     to: email,
-    subject: "Welcome to Percel Logistics",
-    htmlContent: `<h2>Hello ${name},</h2><p>Welcome to Percel Logistics! Your application to become a partner has been received.</p>`
+    subject: "Welcome to Parcel Logistics",
+    htmlContent: `<h2>Hello ${name},</h2><p>Welcome to Parcel Logistics! Your application to become a partner has been received.</p>`
   });
 }
 export async function sendOtpEmail(email, trackingId, otp) {
   return sendMail({
     to: email,
-    subject: `Your OTP for Percel Tracking #${trackingId}`,
+    subject: `Your OTP for Parcel Tracking #${trackingId}`,
     htmlContent: `<h2>Package Out for Delivery</h2><p>Your package is out for delivery. Please provide this OTP to the rider: <strong>${otp}</strong>.</p>`
   });
 }
 export async function sendMerchantNotification(email, message) {
    return sendMail({
     to: email,
-    subject: `Important Update from Percel`,
+    subject: `Important Update from Parcel`,
     htmlContent: `<h2>Account Notification</h2><p>${message}</p>`
   });
 }

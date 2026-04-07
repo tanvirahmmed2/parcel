@@ -4,6 +4,8 @@ import { User } from "@/models/User";
 import bcrypt from "bcryptjs";
 import { signToken } from "@/lib/jwt";
 import { sendMail } from "@/lib/mail";
+import { createSession } from "@/lib/auth-shield";
+
 export async function POST(req) {
   try {
     const data = await req.json();
@@ -12,7 +14,11 @@ export async function POST(req) {
       return new NextResponse("Missing required fields", { status: 400 });
     }
     await connectToDatabase();
-    const existing = await User.findOne({ email });
+    
+    // Convert to lowercase and trim
+    const normalizedEmail = email.toLowerCase().trim();
+    
+    const existing = await User.findOne({ email: normalizedEmail });
     if (existing) {
       return new NextResponse("Email already exists", { status: 409 });
     }
@@ -20,18 +26,20 @@ export async function POST(req) {
     const newUser = new User({
       name,
       storeName,
-      email,
+      email: normalizedEmail,
       phone,
       password: hashedPassword,
       role: role || "MERCHANT", 
       status: "PENDING"
     });
     await newUser.save();
+    
     const verifyToken = await signToken({ intent: "VERIFY_EMAIL", id: newUser._id.toString() });
-    const verificationUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/auth/verify?token=${verifyToken}`;
+    const verificationUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/verify?token=${verifyToken}`;
+    
     try {
       await sendMail({
-        to: email,
+        to: normalizedEmail,
         subject: "Verify Your Percel Account",
         htmlContent: `<h2>Welcome to Percel, ${name}!</h2>
         <p>Please click the link below to verify your email. Once verified, your account will enter the approval queue.</p>
@@ -40,9 +48,23 @@ export async function POST(req) {
     } catch(e) {
       console.warn("Could not dispatch verification email, dropping token to console: ", verificationUrl);
     }
-    return NextResponse.json({ success: true, message: "Registered. Please verify your email." });
+    
+    const payload = {
+      id: newUser._id.toString(),
+      name: newUser.name,
+      email: newUser.email,
+      role: newUser.role,
+      status: newUser.status
+    };
+    await createSession(payload);
+
+    return NextResponse.json({ 
+      success: true, 
+      message: "Registered successfully. You are pending approval.",
+      user: payload 
+    });
   } catch (err) {
     console.error("Registration Error:", err);
-    return new NextResponse("Internal server error", { status: 500 });
+    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }

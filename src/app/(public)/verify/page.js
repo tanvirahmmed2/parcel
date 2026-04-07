@@ -30,7 +30,7 @@ export default async function VerifyEmailPage({ searchParams }) {
 }
 function ResultState({ isError, message }) {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+    <div className="flex-1 flex flex-col items-center justify-center p-4">
        <div className="bg-white p-10 rounded-3xl shadow-xl w-full max-w-lg text-center flex flex-col items-center">
          <div className={`w-20 h-20 flex items-center justify-center rounded-2xl mb-6 shadow-inner ${isError ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}`}>
             {isError ? <AlertCircle className="w-10 h-10" /> : <CheckCircle className="w-10 h-10" />}

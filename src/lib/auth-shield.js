@@ -1,11 +1,29 @@
-import { jwtVerify } from "jose";
+import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { connectToDatabase } from "./db";
 import { User } from "@/models/User";
 
-const secretKey = process.env.JWT_SECRET
+const secretKey = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET || "fallback_secret_key";
 const encodedKey = new TextEncoder().encode(secretKey);
+
+export async function createSession(payload) {
+  const token = await new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("7d")
+    .sign(encodedKey);
+
+  const cookieStore = await cookies();
+  cookieStore.set("session", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 7 * 24 * 60 * 60,
+    path: "/",
+  });
+  return token;
+}
 
 export async function verifySession() {
   const cookieStore = await cookies();
@@ -47,7 +65,7 @@ export async function requireAuth(roles = []) {
   const payload = await verifySession();
 
   if (!payload || !payload.id) {
-    redirect("/auth/login");
+    redirect("/login");
   }
 
   if (payload.role !== "ADMIN" && payload.status !== "ACTIVE") {

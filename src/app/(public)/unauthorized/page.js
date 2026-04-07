@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ShieldAlert } from "lucide-react";
 export default function UnauthorizedPage() {
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 text-center">
+    <div className="flex-1 flex items-center justify-center p-4 text-center">
       <div className="bg-white p-12 rounded-3xl shadow-xl border border-rose-100 max-w-lg w-full flex flex-col items-center">
          <div className="w-24 h-24 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mb-6">
            <ShieldAlert className="w-12 h-12" />

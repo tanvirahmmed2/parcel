@@ -4,23 +4,22 @@ import { User } from "@/models/User";
 import { requireAuth as auth } from "@/lib/auth-shield";
 export async function GET(req) {
   try {
-    const session = await auth();
-    if (!session || session.user.role !== "ADMIN") return new NextResponse("Unauthorized", { status: 401 });
+    const session = await auth(["ADMIN"]);
     const { searchParams } = new URL(req.url);
     const role = searchParams.get("role");
     await connectToDatabase();
     const query = {};
     if (role) query.role = role;
-    const users = await User.find(query).select("-password").sort({ createdAt: -1 });
+    const users = await User.find(query).select("-password").sort({ createdAt: -1 }).lean();
     return NextResponse.json(users);
   } catch(e) {
+    if (e.message === "NEXT_REDIRECT") throw e;
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
 export async function PATCH(req) {
   try {
-    const session = await auth();
-    if (!session || session.user.role !== "ADMIN") return new NextResponse("Unauthorized", { status: 401 });
+    const session = await auth(["ADMIN"]);
     const { id, status } = await req.json();
     if (!id || !status) return new NextResponse("Bad Request", { status: 400 });
     await connectToDatabase();
@@ -30,6 +29,7 @@ export async function PATCH(req) {
     await user.save();
     return NextResponse.json({ success: true, user });
   } catch(e) {
+    if (e.message === "NEXT_REDIRECT") throw e;
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

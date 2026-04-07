@@ -14,15 +14,7 @@ export default function GlobalTracker() {
     }
   };
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
-      {}
-      <nav className="flex items-center justify-between px-8 py-6 max-w-7xl mx-auto w-full">
-        <Link href="/" className="flex items-center gap-2">
-          <Package className="w-8 h-8 text-black" />
-          <span className="text-2xl font-black tracking-tight">Percel</span>
-        </Link>
-        <Link href="/" className="text-sm font-medium text-slate-500 hover:text-black transition">Back to Home</Link>
-      </nav>
+    <>
       {}
       <div className="flex-1 flex flex-col items-center justify-center p-4 -mt-20">
         <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-full max-w-2xl text-center">
@@ -55,6 +47,6 @@ export default function GlobalTracker() {
           </div>
         </motion.div>
       </div>
-    </div>
+    </>
   );
 }

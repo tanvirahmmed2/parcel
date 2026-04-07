@@ -12,7 +12,7 @@ export async function POST(req) {
     const otp = Math.floor(1000 + Math.random() * 9000).toString();
     parcel.deliveryOtp = otp;
     await parcel.save();
-     is Out for Delivery!`);
+    console.log(`Parcel ${parcel.trackingId || id} is Out for Delivery!`);
     return NextResponse.json({ success: true, message: "Mock OTP sent via console" });
   } catch (error) {
     console.error("Mailer error:", error);
