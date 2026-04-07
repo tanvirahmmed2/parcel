@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/db";
 import { User } from "@/models/User";
 import { requireAuth as auth } from "@/lib/auth-shield";
+import bcrypt from "bcryptjs";
 export async function GET(req) {
   try {
     const session = await auth(["ADMIN"]);
@@ -44,6 +45,39 @@ export async function DELETE(req) {
     return NextResponse.json({ success: true });
   } catch(e) {
     if (e.message === "NEXT_REDIRECT") throw e;
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}
+export async function POST(req) {
+  try {
+    const session = await auth(["ADMIN"]);
+    const { name, email, password, role, phone } = await req.json();
+    
+    if (!name || !email || !password || !role) {
+      return new NextResponse("Missing required fields", { status: 400 });
+    }
+
+    await connectToDatabase();
+    
+    const existing = await User.findOne({ email: email.toLowerCase() });
+    if (existing) {
+      return new NextResponse("User already exists", { status: 409 });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await User.create({
+      name,
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      role,
+      phone,
+      status: "ACTIVE" // Direct admin creation skips pending status
+    });
+
+    return NextResponse.json({ success: true, user: { id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role } }, { status: 201 });
+  } catch (e) {
+    if (e.message === "NEXT_REDIRECT") throw e;
+    console.error("Admin user creation error:", e);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

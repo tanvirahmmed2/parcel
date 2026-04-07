@@ -1,6 +1,8 @@
 import "dotenv/config";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import dns from "dns";
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 import { User } from "../src/models/User.js";
 import { Parcel } from "../src/models/Parcel.js";
 
@@ -37,7 +39,7 @@ async function runSeed() {
 
     // 5 Merchants
     const merchants = [];
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= 2; i++) {
       merchants.push(await User.create({
         name: `Merchant ${i}`,
         email: `merchant${i}@logistics.com`,
@@ -52,7 +54,7 @@ async function runSeed() {
 
     // 10 Riders
     const riders = [];
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= 2; i++) {
         riders.push(await User.create({
             name: `Rider ${i}`,
             email: `rider${i}@logistics.com`,
@@ -62,13 +64,24 @@ async function runSeed() {
             phone: `0190000000${i}`
         }));
     }
-    console.log("10 Riders created");
+    console.log("Riders created");
+
+    // 1 Hub Manager
+    await User.create({
+        name: "Central Hub Manager",
+        email: "hub@logistics.com",
+        password: passwordHash,
+        role: "HUB",
+        status: "ACTIVE",
+        phone: "01600000000"
+    });
+    console.log("Hub Manager created");
 
     // 50 Parcels
     const statuses = ["Pending", "Picked Up", "In Transit", "Hub Received", "Out for Delivery", "Delivered", "Partial Delivered", "Returned"];
     
     const parcels = [];
-    for (let i = 1; i <= 50; i++) {
+    for (let i = 1; i <= 5; i++) {
       const merchant = merchants[Math.floor(Math.random() * merchants.length)];
       const rider = Math.random() > 0.5 ? riders[Math.floor(Math.random() * riders.length)]._id : null;
       const status = statuses[Math.floor(Math.random() * statuses.length)];

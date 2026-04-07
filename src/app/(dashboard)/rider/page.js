@@ -39,18 +39,18 @@ export default function RiderDashboard() {
           </div>
         </Link>
         <div className="grid grid-cols-2 gap-4">
-          <button className="bg-white border text-center border-slate-200 p-6 rounded-[2rem] flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform shadow-sm">
+          <Link href="/rider/parcels/active" className="bg-white border text-center border-slate-200 p-6 rounded-[2rem] flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform shadow-sm">
              <div className="bg-blue-50 text-blue-600 p-4 rounded-full">
                <MapPin className="w-8 h-8" />
              </div>
-             <span className="font-bold">Next Drop</span>
-          </button>
-          <button className="bg-white border text-center border-slate-200 p-6 rounded-[2rem] flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform shadow-sm">
+             <span className="font-bold text-slate-800 tracking-tight">Active Route</span>
+          </Link>
+          <Link href="/rider/parcels/history" className="bg-white border text-center border-slate-200 p-6 rounded-[2rem] flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform shadow-sm">
              <div className="bg-rose-50 text-rose-600 p-4 rounded-full">
                <CheckCircle className="w-8 h-8" />
              </div>
-             <span className="font-bold">My History</span>
-          </button>
+             <span className="font-bold text-slate-800 tracking-tight">My History</span>
+          </Link>
         </div>
       </div>
     </div>

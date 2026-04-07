@@ -22,7 +22,7 @@ export async function middleware(req) {
 
   if (pathname.startsWith("/login") || pathname.startsWith("/register")) {
     if (payload) {
-      const target = payload.role === "ADMIN" ? "/admin" : payload.role === "MERCHANT" ? "/merchant" : "/rider";
+      const target = payload.role === "ADMIN" ? "/admin" : payload.role === "MERCHANT" ? "/merchant" : payload.role === "HUB" ? "/hub" : "/rider";
       return NextResponse.redirect(`${baseUrl}${target}`);
     }
     return NextResponse.next();
@@ -32,7 +32,9 @@ export async function middleware(req) {
     pathname.startsWith("/admin") || 
     pathname.startsWith("/merchant") || 
     pathname.startsWith("/rider") || 
-    pathname.startsWith("/api/admin")
+    pathname.startsWith("/hub") || 
+    pathname.startsWith("/api/admin") ||
+    pathname.startsWith("/api/hub")
   ) {
     if (!payload) {
       return NextResponse.redirect(`${baseUrl}/login?callbackUrl=${encodeURIComponent(pathname)}`);
@@ -55,6 +57,10 @@ export async function middleware(req) {
     if (pathname.startsWith("/rider") && payload.role !== "RIDER" && payload.role !== "ADMIN") {
        return NextResponse.redirect(`${baseUrl}/unauthorized`);
     }
+
+    if (pathname.startsWith("/hub") && payload.role !== "HUB" && payload.role !== "ADMIN") {
+       return NextResponse.redirect(`${baseUrl}/unauthorized`);
+    }
   }
 
   return NextResponse.next();
@@ -66,7 +72,9 @@ export const config = {
     "/admin/:path*", 
     "/merchant/:path*", 
     "/rider/:path*", 
+    "/hub/:path*", 
     "/api/admin/:path*",
+    "/api/hub/:path*",
     "/login",
     "/register"
   ],

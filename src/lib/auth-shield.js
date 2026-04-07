@@ -61,6 +61,11 @@ export async function isRider() {
   return payload?.role === "RIDER" || payload?.role === "ADMIN";
 }
 
+export async function isHub() {
+  const payload = await verifySession();
+  return payload?.role === "HUB" || payload?.role === "ADMIN";
+}
+
 export async function requireAuth(roles = []) {
   const payload = await verifySession();
 

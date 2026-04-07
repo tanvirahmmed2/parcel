@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
-import { LayoutDashboard, Package, LogOut, FileSpreadsheet, Building2, User as UserIcon, ChevronLeft, ChevronRight, Bike, Boxes, Clock } from "lucide-react";
+import { LayoutDashboard, Package, LogOut, FileSpreadsheet, Building2, User as UserIcon, ChevronLeft, ChevronRight, Bike, Boxes, Clock, QrCode, MapPin, Truck, CheckCircle, Scan } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 
@@ -25,14 +25,22 @@ export default function Sidebar({ user }) {
       { href: "/admin", icon: LayoutDashboard, label: "Command Center" },
       { href: "/admin/merchants", icon: Building2, label: "Merchants" },
       { href: "/admin/riders", icon: Bike, label: "Riders" },
+      { href: "/admin/hubs", icon: Boxes, label: "Hub Management" },
       { href: "/admin/parcels", icon: Boxes, label: "All Parcels" },
       { href: "/admin/parcels/pending", icon: Clock, label: "Pending Parcels" },
       { href: "/admin/withdrawals", icon: FileSpreadsheet, label: "Withdrawals" },
       { href: "/admin/map", icon: UserIcon, label: "Map" },
     ] : []),
     ...(role === "RIDER" ? [
-      { href: "/rider", icon: Package, label: "My Deliveries" },
-      { href: "/rider/scan", icon: LayoutDashboard, label: "Scanner" },
+      { href: "/rider", icon: LayoutDashboard, label: "Rider Hub" },
+      { href: "/rider/scan", icon: QrCode, label: "Scanner Tool" },
+      { href: "/rider/parcels/pending", icon: MapPin, label: "Available Dispatches" },
+      { href: "/rider/parcels/active", icon: Truck, label: "Active Deliveries" },
+      { href: "/rider/parcels/history", icon: CheckCircle, label: "My History" },
+    ] : []),
+    ...(role === "HUB" ? [
+      { href: "/hub", icon: LayoutDashboard, label: "Hub Overview" },
+      { href: "/hub", icon: Scan, label: "Sorting Tools" },
     ] : []),
     { href: "/profile", icon: UserIcon, label: "My Profile" },
   ];
