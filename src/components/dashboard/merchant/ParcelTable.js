@@ -100,9 +100,6 @@ export default function ParcelTable({ initialData }) {
               className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-black transition"
             />
           </div>
-          <button onClick={() => setModalOpen(true)} className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-800 transition">
-            <Plus className="w-4 h-4" /> Create Parcel
-          </button>
         </div>
       </div>
       <div className="overflow-x-auto w-full">
