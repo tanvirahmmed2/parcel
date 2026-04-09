@@ -14,37 +14,76 @@ export default function DeliveryCalculator() {
   };
 
   return (
-    <motion.div initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} viewport={{ once: true }} className="bg-slate-50 p-10 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden">
-      <div className="absolute top-0 right-0 p-8 opacity-5">
-        <Calculator className="w-48 h-48" />
+    <motion.div 
+      initial={{ x: -20, opacity: 0 }} 
+      whileInView={{ x: 0, opacity: 1 }} 
+      viewport={{ once: true }} 
+      className="bg-white p-8 md:p-10 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden"
+    >
+      <div className="absolute top-0 right-0 p-8 opacity-[0.05] pointer-events-none">
+        <Calculator className="w-48 h-48 text-slate-900" />
       </div>
+      
       <div className="relative z-10">
-        <h3 className="text-3xl font-bold mb-2">Check Delivery Rate</h3>
-        <p className="text-slate-500 mb-8">Instant, transparent pricing calculations.</p>
+        <div className="flex items-center gap-3 mb-8">
+           <Calculator className="w-6 h-6 text-blue-600" />
+           <h3 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">Check Rates</h3>
+        </div>
+
         <div className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Delivery Area</label>
-            <div className="grid grid-cols-2 gap-4">
-              <button onClick={() => setDistrict("dhaka")} className={`py-4 rounded-2xl font-medium border-2 transition ${district === "dhaka" ? "border-black bg-white shadow-sm" : "border-slate-200 text-slate-500 hover:border-slate-300"}`}>Inside Dhaka</button>
-              <button onClick={() => setDistrict("outside")} className={`py-4 rounded-2xl font-medium border-2 transition ${district === "outside" ? "border-black bg-white shadow-sm" : "border-slate-200 text-slate-500 hover:border-slate-300"}`}>Outside Dhaka</button>
+            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Delivery Area</label>
+            <div className="grid grid-cols-2 gap-3">
+              <button 
+                onClick={() => setDistrict("dhaka")} 
+                className={`py-3.5 rounded-xl font-bold border-2 transition-all ${district === "dhaka" ? "border-slate-900 bg-slate-900 text-white" : "border-slate-100 text-slate-500 hover:border-slate-200"}`}
+              >
+                Dhaka
+              </button>
+              <button 
+                onClick={() => setDistrict("outside")} 
+                className={`py-3.5 rounded-xl font-bold border-2 transition-all ${district === "outside" ? "border-slate-900 bg-slate-900 text-white" : "border-slate-100 text-slate-500 hover:border-slate-200"}`}
+              >
+                Outside
+              </button>
             </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Approximate Weight (kg)</label>
-            <input type="range" min="1" max="10" step="0.5" value={weight} onChange={(e) => setWeight(Number(e.target.value))} className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-black" />
-            <div className="flex justify-between mt-2 text-sm font-bold text-slate-500">
+
+          <div className="space-y-3">
+            <div className="flex justify-between items-end">
+               <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Weight (kg)</label>
+               <span className="text-xl font-bold text-slate-900">{weight} kg</span>
+            </div>
+            <input 
+              type="range" 
+              min="1" 
+              max="10" 
+              step="0.5" 
+              value={weight} 
+              onChange={(e) => setWeight(Number(e.target.value))} 
+              className="w-full h-1.5 bg-slate-100 rounded-full appearance-none cursor-pointer accent-blue-600 transition-all" 
+            />
+            <div className="flex justify-between text-[10px] font-bold text-slate-300 uppercase tracking-widest">
               <span>1kg</span>
-              <span className="text-black bg-white px-3 py-1 rounded-full shadow-sm border border-slate-100">{weight} kg</span>
               <span>10kg</span>
             </div>
           </div>
-          <div className="bg-black text-white p-6 rounded-2xl mt-8 flex justify-between items-center shadow-lg">
+
+          <div className="bg-blue-50 border border-blue-100 p-6 rounded-2xl flex justify-between items-center">
             <div>
-              <span className="block text-sm opacity-80 mb-1">Estimated Charge</span>
-              <span className="text-3xl font-black tracking-tight">{calculateRate()} BDT</span>
+              <span className="block text-xs font-bold text-blue-400 uppercase tracking-widest mb-1 text-center">Estimated Cost</span>
+              <span className="text-3xl font-bold text-blue-600">
+                ৳{calculateRate()}
+              </span>
             </div>
-            <Truck className="w-10 h-10 opacity-20" />
+            <div className="bg-white p-3 rounded-xl shadow-sm border border-blue-100">
+               <Truck className="w-6 h-6 text-blue-600" />
+            </div>
           </div>
+
+          <p className="text-center text-[10px] text-slate-400 font-medium">
+            * Final rates depend on actual measurements.
+          </p>
         </div>
       </div>
     </motion.div>

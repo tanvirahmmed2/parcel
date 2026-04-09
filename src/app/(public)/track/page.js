@@ -16,7 +16,7 @@ export default function GlobalTracker() {
   return (
     <>
       {}
-      <div className="flex-1 flex flex-col items-center justify-center p-4 -mt-20">
+      <div className="flex-1 flex flex-col items-center justify-center p-6 bg-white/50 backdrop-blur-sm rounded-[3rem] border border-slate-100/50 shadow-2xl shadow-blue-900/5 mb-20 mx-6">
         <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-full max-w-2xl text-center">
           <h1 className="text-5xl font-extrabold tracking-tight mb-4">Where is your package?</h1>
           <p className="text-xl text-slate-500 mb-10">Enter your Parcel Tracking ID below for real-time updates.</p>

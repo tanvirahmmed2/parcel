@@ -49,63 +49,81 @@ export default function TrackingPage() {
   const currentStepIndex = Math.max(0, STEPS.findIndex(s => s.status === parcel.status));
   const isDelivered = parcel.status === "Delivered";
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-md mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Parcel Tracker</h1>
-          <p className="text-gray-500 mt-2">Tracking ID: <span className="font-mono text-gray-800 bg-gray-200 px-2 rounded">{parcel.trackingId}</span></p>
-        </div>
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6 mb-6 relative">
-           <div className="relative z-10 space-y-8">
-             {STEPS.map((step, idx) => {
-               const isActive = parcel.status === step.status;
-               const isCompleted = isDelivered || STEPS.findIndex(s => s.status === parcel.status) > idx;
-               const Icon = step.icon;
-               const historyEvent = (parcel.history || []).find(h => h.status === step.status && step.status !== "Pending");
-               return (
-                 <div key={idx} className="relative flex items-start gap-4">
-                   {}
-                   {idx < STEPS.length - 1 && (
-                     <div className={`absolute top-10 left-6 -ml-px w-0.5 h-12 rounded-full ${isCompleted ? 'bg-black' : 'bg-gray-100'}`} />
-                   )}
-                   <motion.div 
-                     initial={{ scale: 0.8, opacity: 0 }}
-                     animate={{ scale: 1, opacity: 1 }}
-                     transition={{ delay: idx * 0.1 }}
-                     className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 border-2 
-                       ${isCompleted ? 'bg-black text-white border-black' : 
-                         isActive ? 'bg-white border-black text-black' : 
-                         'bg-gray-50 border-gray-100 text-gray-300'}`}
-                   >
-                     <Icon className="w-5 h-5" />
-                   </motion.div>
-                   <div className="pt-2">
-                     <p className={`font-semibold ${isCompleted || isActive ? 'text-gray-900' : 'text-gray-400'}`}>
-                       {step.label}
-                     </p>
-                     {historyEvent && (
-                       <p className="text-xs text-gray-500 mt-1">
-                         {new Date(historyEvent.timestamp).toLocaleString()}
-                       </p>
-                     )}
-                   </div>
-                 </div>
-               );
-             })}
-           </div>
-        </div>
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 flex flex-col gap-3 text-sm shadow-sm">
-          <div className="flex justify-between items-center pb-3 border-b">
-            <span className="text-gray-500">Receiver</span>
-            <span className="font-semibold">{parcel.receiverName}</span>
+    <div className="min-h-screen bg-slate-50 py-16 px-6 font-sans antialiased">
+      <div className="max-w-2xl mx-auto">
+        <div className="text-center mb-12">
+          <div className="inline-block p-3 bg-slate-900 rounded-2xl mb-4 shadow-lg">
+            <Package className="w-8 h-8 text-white" />
           </div>
-          <div className="flex justify-between items-center pb-3 border-b">
-            <span className="text-gray-500">Destination</span>
-            <span className="font-semibold">{parcel.district}</span>
+          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 mb-2">Track Parcel</h1>
+          <p className="text-slate-500 font-medium tracking-tight">
+            ID: <span className="font-mono text-blue-600 font-bold">{parcel.trackingId}</span>
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-5 gap-8">
+          <div className="lg:col-span-3">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+              <div className="relative space-y-10">
+                {STEPS.map((step, idx) => {
+                  const isActive = parcel.status === step.status;
+                  const isCompleted = isDelivered || STEPS.findIndex(s => s.status === parcel.status) > idx;
+                  const Icon = step.icon;
+                  const historyEvent = (parcel.history || []).find(h => h.status === step.status && step.status !== "Pending");
+                  
+                  return (
+                    <div key={idx} className="relative flex items-start gap-4">
+                      {idx < STEPS.length - 1 && (
+                        <div className={`absolute top-10 left-5 -ml-px w-0.5 h-10 ${isCompleted ? 'bg-blue-600' : 'bg-slate-100'}`} />
+                      )}
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border-2 
+                        ${isCompleted ? 'bg-blue-600 text-white border-blue-600' : 
+                          isActive ? 'bg-white border-slate-900 text-slate-900' : 
+                          'bg-slate-50 border-slate-100 text-slate-300'}`}
+                      >
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div className="pt-2">
+                        <p className={`font-bold leading-none ${isCompleted || isActive ? 'text-slate-900' : 'text-slate-400'}`}>
+                          {step.label}
+                        </p>
+                        {historyEvent && (
+                           <p className="text-xs text-slate-500 mt-1 font-medium">
+                             {new Date(historyEvent.timestamp).toLocaleString()}
+                           </p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-500">Cash to Collect</span>
-            <span className="font-semibold text-lg text-black">৳{parcel.codAmount}</span>
+
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+               <h3 className="text-sm font-bold uppercase tracking-widest text-slate-400 mb-4">Consignment Info</h3>
+               <div className="space-y-4">
+                  <div className="flex justify-between items-center pb-3 border-b border-slate-50">
+                    <span className="text-sm text-slate-500">Recipient</span>
+                    <span className="text-sm font-bold text-slate-900">{parcel.receiverName}</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-3 border-b border-slate-50">
+                    <span className="text-sm text-slate-500">Destination</span>
+                    <span className="text-sm font-bold text-slate-900">{parcel.district}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-slate-500">Cash Collection</span>
+                    <span className="text-lg font-bold text-blue-600">৳{parcel.codAmount}</span>
+                  </div>
+               </div>
+            </div>
+
+            <div className="bg-slate-900 text-white rounded-2xl p-6 shadow-xl">
+               <p className="text-xs font-medium leading-relaxed opacity-70">
+                  For support regarding this delivery, please contact us at <span className="font-bold underline text-blue-400">support@parcel.com</span>
+               </p>
+            </div>
           </div>
         </div>
       </div>

@@ -34,20 +34,21 @@ export default function LoginForm() {
   const [state, formAction, isPending] = useActionState(loginAction, null);
 
   return (
-    <form action={formAction} className="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 flex flex-col gap-5">
-      <div>
-        <label className="block text-sm font-semibold mb-2">Email Address</label>
+    <form action={formAction} className="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 flex flex-col gap-6 w-full max-w-md mx-auto">
+      <div className="space-y-1">
+        <label className="text-sm font-semibold text-slate-700">Email Address</label>
         <input 
           type="email" 
           name="email"
           required
-          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition"
+          autoComplete="email"
+          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium"
         />
       </div>
-      <div>
-        <div className="flex justify-between items-center mb-2">
-          <label className="text-sm font-semibold">Password</label>
-          <a href="/forgot-password" size="sm" className="text-sm font-medium text-slate-500 hover:text-black transition">
+      <div className="space-y-1">
+        <div className="flex justify-between items-center">
+          <label className="text-sm font-semibold text-slate-700">Password</label>
+          <a href="/forgot-password" size="sm" className="text-sm font-medium text-blue-600 hover:underline transition">
             Forgot Password?
           </a>
         </div>
@@ -55,16 +56,29 @@ export default function LoginForm() {
           type="password" 
           name="password"
           required
+          autoComplete="current-password"
           minLength={6}
-          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition"
+          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium"
         />
       </div>
       
-      {state?.error && <p className="text-red-500 text-sm text-center">{state.error}</p>}
+      {state?.error && (
+        <p className="text-rose-500 text-sm font-medium text-center">
+          {state.error}
+        </p>
+      )}
       
-      <LoadingButton isLoading={isPending} type="submit" className="mt-2 w-full bg-[#0f172a] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition disabled:opacity-50">
+      <LoadingButton 
+        isLoading={isPending} 
+        type="submit" 
+        className="mt-2 w-full bg-slate-900 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition shadow-lg"
+      >
         <Lock className="w-4 h-4"/> Sign In
       </LoadingButton>
+
+      <p className="text-center text-sm text-slate-500">
+        New here? <a href="/register" className="text-blue-600 font-bold hover:underline">Create an account</a>
+      </p>
     </form>
   );
 }
