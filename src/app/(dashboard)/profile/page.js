@@ -75,7 +75,7 @@ export default function ProfileDashboard() {
         
         <div className="pt-16 pb-8 px-8 border-b border-slate-100">
           {editing ? (
-            <input type="text" name="name" value={formData.name} onChange={handleChange} className="text-2xl font-bold tracking-tight text-slate-900 w-full max-w-sm border-b-2 border-slate-300 focus:border-slate-800 outline-none pb-1 bg-transparent" placeholder="Your Full Name" />
+            <input type="text" name="name" value={formData.name} onChange={handleChange} className="text-2xl font-bold tracking-tight text-slate-900 w-full max-w-sm border-b-2 border-slate-300 focus:border-slate-800 outline-none pb-1 bg-transparent" />
           ) : (
             <h2 className="text-2xl font-bold tracking-tight text-slate-900">{user.name}</h2>
           )}
@@ -103,7 +103,7 @@ export default function ProfileDashboard() {
                <div className="flex-1">
                  <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">Phone Number</p>
                  {editing ? (
-                    <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="font-medium text-slate-900 w-full bg-slate-50 px-2 py-1 border border-slate-200 rounded-md outline-none" placeholder="Enter phone" />
+                    <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="font-medium text-slate-900 w-full bg-slate-50 px-2 py-1 border border-slate-200 rounded-md outline-none" />
                  ) : (
                     <p className="font-medium text-slate-900">{user.phone || "Not set"}</p>
                  )}

@@ -32,7 +32,7 @@ export async function GET(req) {
       .sort({ updatedAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate("merchantId", "name storeName")
+      .populate("merchantId", "name storeName phone email")
       .populate("riderId", "name phone")
       .lean();
 

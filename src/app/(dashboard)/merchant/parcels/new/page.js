@@ -38,7 +38,7 @@ export default function CreateParcel() {
     <div className="p-8 font-sans max-w-2xl mx-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold tracking-tight">Create Parcel</h1>
-        <p className="text-slate-500">Dispatch a new item to the Steadfast logistics network.</p>
+        <p className="text-slate-500">Dispatch a new item to the Parcel logistics network.</p>
       </div>
 
       <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden p-8">
@@ -48,7 +48,7 @@ export default function CreateParcel() {
               <label className="text-sm font-bold text-slate-700">Receiver Name</label>
               <div className="relative">
                 <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"><Package className="w-5 h-5"/></div>
-                <input required type="text" name="receiverName" value={formData.receiverName} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-black outline-none" placeholder="John Doe" />
+                <input required type="text" name="receiverName" value={formData.receiverName} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-black outline-none" />
               </div>
             </div>
 
@@ -56,7 +56,7 @@ export default function CreateParcel() {
               <label className="text-sm font-bold text-slate-700">Receiver Phone</label>
               <div className="relative">
                 <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"><Navigation className="w-5 h-5"/></div>
-                <input required type="text" name="phone" value={formData.phone} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-black outline-none" placeholder="017..." />
+                <input required type="text" name="phone" value={formData.phone} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-black outline-none" />
               </div>
             </div>
           </div>
@@ -65,7 +65,7 @@ export default function CreateParcel() {
             <label className="text-sm font-bold text-slate-700">Full Address</label>
             <div className="relative">
               <div className="absolute left-3 top-4 text-slate-400"><MapPin className="w-5 h-5"/></div>
-              <textarea required name="address" value={formData.address} onChange={handleChange} rows="3" className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-black outline-none" placeholder="123 Example St..."></textarea>
+              <textarea required name="address" value={formData.address} onChange={handleChange} rows="3" className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-black outline-none"></textarea>
             </div>
           </div>
 
@@ -98,7 +98,7 @@ export default function CreateParcel() {
               <label className="text-sm font-bold text-slate-700">COD Amount (৳) <span className="text-xs text-slate-400 font-normal">Amount to collect</span></label>
               <div className="relative">
                 <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"><Banknote className="w-5 h-5"/></div>
-                <input required type="number" min="0" name="codAmount" value={formData.codAmount} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-black outline-none font-mono" placeholder="0" />
+                <input required type="number" min="0" name="codAmount" value={formData.codAmount} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-black outline-none font-mono" />
               </div>
             </div>
 
@@ -106,7 +106,7 @@ export default function CreateParcel() {
               <label className="text-sm font-bold text-slate-700">Weight (KG)</label>
               <div className="relative">
                 <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"><Scale className="w-5 h-5"/></div>
-                <input required type="number" min="0.1" step="0.1" name="weight" value={formData.weight} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-black outline-none font-mono" placeholder="1" />
+                <input required type="number" min="0.1" step="0.1" name="weight" value={formData.weight} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-black outline-none font-mono" />
               </div>
             </div>
           </div>

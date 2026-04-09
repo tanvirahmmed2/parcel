@@ -83,7 +83,7 @@ export default function BusinessSettings() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-slate-700">Brand / Store Name</label>
-                  <input type="text" name="storeName" value={formData.storeName} onChange={handleChange} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition" placeholder="Your Store Ltd." />
+                  <input type="text" name="storeName" value={formData.storeName} onChange={handleChange} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition" />
                 </div>
               </section>
 
@@ -100,7 +100,7 @@ export default function BusinessSettings() {
                     <label className="text-sm font-bold text-slate-700">Bank Name</label>
                     <div className="relative">
                       <Landmark className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                      <input type="text" name="bankDetails.bankName" value={formData.bankDetails.bankName} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none transition" placeholder="Example Bank Plc." />
+                      <input type="text" name="bankDetails.bankName" value={formData.bankDetails.bankName} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none transition" />
                     </div>
                   </div>
 
@@ -108,7 +108,7 @@ export default function BusinessSettings() {
                     <label className="text-sm font-bold text-slate-700">Account Holder Name</label>
                     <div className="relative">
                       <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                      <input type="text" name="bankDetails.accountName" value={formData.bankDetails.accountName} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none transition" placeholder="John Doe" />
+                      <input type="text" name="bankDetails.accountName" value={formData.bankDetails.accountName} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none transition" />
                     </div>
                   </div>
 
@@ -116,7 +116,7 @@ export default function BusinessSettings() {
                     <label className="text-sm font-bold text-slate-700">Account Number</label>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-sm leading-none">#</span>
-                      <input type="text" name="bankDetails.accountNumber" value={formData.bankDetails.accountNumber} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none text-slate-900 font-mono transition" placeholder="0000000000" />
+                      <input type="text" name="bankDetails.accountNumber" value={formData.bankDetails.accountNumber} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none text-slate-900 font-mono transition" />
                     </div>
                   </div>
                 </div>

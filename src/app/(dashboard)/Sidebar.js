@@ -64,7 +64,7 @@ export default function Sidebar({ user }) {
             <AnimatePresence>
             {!collapsed && (
                 <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, scale: 0.9 }}>
-                <h1 className="text-xl font-bold tracking-tight text-white">Percel</h1>
+                <h1 className="text-xl font-bold tracking-tight text-white">Parcel</h1>
                 <p className="text-[10px] text-slate-500 uppercase tracking-widest">{role}</p>
                 </motion.div>
             )}
@@ -77,7 +77,7 @@ export default function Sidebar({ user }) {
           const Icon = link.icon;
           const isActive = pathname === link.href;
           return (
-            <div key={link.href} className="relative group">
+            <div key={`${link.href}-${link.label}`} className="relative group">
               <Link
                 href={link.href}
                 className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all ${

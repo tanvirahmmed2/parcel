@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import DataTable from "@/components/shared/DataTable";
+import { Eye } from "lucide-react";
+import ReceiptModal from "@/components/shared/ReceiptModal";
 
 export default function HubClientPage({ initialStats, initialParcels }) {
   const [stats, setStats] = useState(initialStats);
@@ -17,6 +19,7 @@ export default function HubClientPage({ initialStats, initialParcels }) {
   const [statusFilter, setStatusFilter] = useState("");
   const [scanValue, setScanValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [previewParcel, setPreviewParcel] = useState(null);
   
   const scanInputRef = useRef(null);
 
@@ -101,6 +104,9 @@ export default function HubClientPage({ initialStats, initialParcels }) {
       header: "Actions",
       cell: ({ row }) => (
         <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={() => setPreviewParcel(row.original)} title="View Receipt">
+            <Eye className="w-4 h-4" />
+          </Button>
           {row.original.status === "In Transit" || row.original.status === "Picked Up" ? (
             <Button size="sm" onClick={() => updateStatus(row.original._id, "RECEIVE")}>
               Receive
@@ -129,7 +135,6 @@ export default function HubClientPage({ initialStats, initialParcels }) {
             <form onSubmit={handleScanSubmit} className="flex gap-2">
                 <Input 
                     ref={scanInputRef}
-                    placeholder="Scan Tracking ID..." 
                     className="w-64"
                     value={scanValue}
                     onChange={(e) => setScanValue(e.target.value)}
@@ -158,7 +163,6 @@ export default function HubClientPage({ initialStats, initialParcels }) {
                 </div>
                 <div className="flex gap-4">
                     <Input 
-                        placeholder="Search parcels..." 
                         className="w-64" 
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
@@ -195,6 +199,12 @@ export default function HubClientPage({ initialStats, initialParcels }) {
             </div>
         )}
       </Card>
+
+      <ReceiptModal 
+        isOpen={!!previewParcel} 
+        onClose={() => setPreviewParcel(null)} 
+        parcel={previewParcel} 
+      />
     </div>
   );
 }

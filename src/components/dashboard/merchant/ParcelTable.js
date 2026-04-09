@@ -96,7 +96,6 @@ export default function ParcelTable({ initialData }) {
             <input 
               value={globalFilter ?? ""} 
               onChange={e => setGlobalFilter(e.target.value)} 
-              placeholder="Search parcels..." 
               className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-black transition"
             />
           </div>

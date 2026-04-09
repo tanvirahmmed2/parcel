@@ -1,14 +1,16 @@
 "use client";
-import { Search, Package, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { Search, Package, ChevronLeft, ChevronRight, Check, Eye } from "lucide-react";
 import useSWR from "swr";
 import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import ReceiptModal from "@/components/shared/ReceiptModal";
 
 const fetcher = url => axios.get(url).then(res => res.data);
 
 export default function RiderPendingParcels() {
   const [page, setPage] = useState(1);
+  const [previewParcel, setPreviewParcel] = useState(null);
   const { data, error, isLoading, mutate } = useSWR(`/api/rider/parcels?type=pending&page=${page}&limit=10`, fetcher, { 
     fallbackData: { parcels: [], pagination: { total: 0, pages: 1 } } 
   });
@@ -37,7 +39,7 @@ export default function RiderPendingParcels() {
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
          <div className="p-4 border-b bg-slate-50 relative">
             <Search className="w-5 h-5 absolute left-7 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input placeholder="Search tracking IDs..." className="pl-12 pr-4 py-2 bg-white border border-slate-200 rounded-lg w-full max-w-sm outline-none focus:ring-2 focus:ring-black transition" />
+            <input className="pl-12 pr-4 py-2 bg-white border border-slate-200 rounded-lg w-full max-w-sm outline-none focus:ring-2 focus:ring-black transition" />
          </div>
          
          <table className="w-full text-left">
@@ -76,7 +78,14 @@ export default function RiderPendingParcels() {
                     <div>{p.weight} kg</div>
                     <div className="font-bold text-black">৳{p.codAmount}</div>
                  </td>
-                 <td className="p-4 text-right">
+                 <td className="p-4 text-right space-y-2">
+                    <button 
+                        onClick={() => setPreviewParcel(p)} 
+                        className="bg-white text-slate-600 px-4 py-2 rounded-lg border border-slate-200 font-bold hover:bg-slate-50 transition flex items-center ml-auto shadow-sm text-xs mb-2"
+                    >
+                        <Eye className="w-3 h-3 mr-2" />
+                        Preview
+                    </button>
                     <button 
                         onClick={() => handleAccept(p._id)} 
                         className="bg-black text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-800 transition flex items-center ml-auto shadow-sm"
@@ -113,6 +122,12 @@ export default function RiderPendingParcels() {
            </div>
          </div>
       </div>
+
+      <ReceiptModal 
+        isOpen={!!previewParcel} 
+        onClose={() => setPreviewParcel(null)} 
+        parcel={previewParcel} 
+      />
     </div>
   );
 }

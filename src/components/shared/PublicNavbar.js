@@ -7,7 +7,7 @@ export default function PublicNavbar() {
       <div className="flex items-center justify-between px-8 py-4 max-w-7xl mx-auto w-full">
         <Link href="/" className="flex items-center gap-2">
           <Package className="w-8 h-8 text-black" />
-          <span className="text-2xl font-black tracking-tight">Percel</span>
+          <span className="text-2xl font-black tracking-tight">Parcel</span>
         </Link>
         <div className="flex gap-4 items-center">
           <Link 

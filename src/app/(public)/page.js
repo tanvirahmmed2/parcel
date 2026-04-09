@@ -4,7 +4,7 @@ import DeliveryCalculator from "@/components/shared/DeliveryCalculator";
 import ClientMotionWrapper from "@/components/shared/ClientMotionWrapper";
 
 export const metadata = {
-  title: "Steadfast Logistics - Enterprise Grade Parcel Delivery",
+  title: "Parcel Logistics - Enterprise Grade Parcel Delivery",
   description: "Scale rapidly with real-time tracking, seamless cash cycles, and powerful APIs.",
 };
 
@@ -36,7 +36,7 @@ export default function LandingPage() {
 
           <div className="space-y-12 pr-4">
             <div>
-              <h2 className="text-4xl font-extrabold mb-4">Why Percel?</h2>
+              <h2 className="text-4xl font-extrabold mb-4">Why Parcel?</h2>
               <p className="text-xl text-slate-500 leading-relaxed">We provide bleeding-edge infrastructure to manage hundreds of deliveries a day without missing a beat.</p>
             </div>
             <div className="space-y-8">

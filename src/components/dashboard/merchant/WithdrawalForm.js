@@ -36,7 +36,6 @@ export default function WithdrawalForm({ availableBalance, onComplete }) {
           type="number" 
           value={amount} 
           onChange={(e) => setAmount(e.target.value)}
-          placeholder="e.g. 5000"
           className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-accent outline-none"
           max={availableBalance}
           required

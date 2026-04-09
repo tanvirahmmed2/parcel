@@ -40,7 +40,7 @@ export async function GET(req) {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate("merchantId", "name storeName phone")
+      .populate("merchantId", "name storeName phone email")
       .lean();
 
     const total = await Parcel.countDocuments(query);

@@ -21,7 +21,7 @@ export async function GET(req) {
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit)
-      .populate("merchantId", "name storeName email")
+      .populate("merchantId", "name storeName email phone")
       .populate("riderId", "name phone")
       .lean();
 

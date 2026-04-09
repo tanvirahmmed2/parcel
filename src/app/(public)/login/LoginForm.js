@@ -42,18 +42,21 @@ export default function LoginForm() {
           name="email"
           required
           className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition"
-          placeholder="name@example.com"
         />
       </div>
       <div>
-        <label className="block text-sm font-semibold mb-2">Password</label>
+        <div className="flex justify-between items-center mb-2">
+          <label className="text-sm font-semibold">Password</label>
+          <a href="/forgot-password" size="sm" className="text-sm font-medium text-slate-500 hover:text-black transition">
+            Forgot Password?
+          </a>
+        </div>
         <input 
           type="password" 
           name="password"
           required
           minLength={6}
           className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition"
-          placeholder="••••••••"
         />
       </div>
       

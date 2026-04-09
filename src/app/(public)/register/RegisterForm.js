@@ -40,7 +40,6 @@ export default function RegisterForm() {
             name="name"
             required
             className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition"
-            placeholder="John Doe"
           />
         </div>
         <div>
@@ -49,7 +48,6 @@ export default function RegisterForm() {
             type="text" 
             name="storeName"
             className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition"
-            placeholder="My Store"
           />
         </div>
       </div>
@@ -60,7 +58,6 @@ export default function RegisterForm() {
           name="email"
           required
           className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition"
-          placeholder="name@example.com"
         />
       </div>
       <div>
@@ -69,7 +66,6 @@ export default function RegisterForm() {
             type="text" 
             name="phone"
             className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition"
-            placeholder="+1234567890"
           />
       </div>
       <div>
@@ -80,7 +76,6 @@ export default function RegisterForm() {
           required
           minLength={6}
           className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3b82f6] transition"
-          placeholder="••••••••"
         />
       </div>
       <div>

@@ -46,3 +46,22 @@ export async function sendMerchantNotification(email, message) {
     htmlContent: `<h2>Account Notification</h2><p>${message}</p>`
   });
 }
+
+export async function sendResetPasswordEmail(email, name, resetUrl) {
+  return sendMail({
+    to: email,
+    subject: "Reset Your Parcel Password",
+    htmlContent: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; rounded: 16px;">
+        <h2 style="color: #0f172a; margin-bottom: 16px;">Password Reset Request</h2>
+        <p style="color: #475569; line-height: 1.6;">Hello ${name},</p>
+        <p style="color: #475569; line-height: 1.6;">We received a request to reset your password. Click the button below to proceed. This link will expire in 1 hour.</p>
+        <div style="margin: 32px 0;">
+          <a href="${resetUrl}" style="background-color: #0f172a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Reset Password</a>
+        </div>
+        <p style="color: #94a3b8; font-size: 12px;">If you didn't request this, you can safely ignore this email.</p>
+      </div>
+    `
+  });
+}
+

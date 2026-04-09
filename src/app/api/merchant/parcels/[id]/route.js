@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 export async function DELETE(req, { params }) {
   try {
     const session = await auth();
-    if (!session || session.user.role !== "MERCHANT") {
+    if (!session || session.role !== "MERCHANT") {
       return new NextResponse("Unauthorized", { status: 401 });
     }
     
@@ -15,7 +15,7 @@ export async function DELETE(req, { params }) {
     
     await connectToDatabase();
     
-    const parcel = await Parcel.findOne({ _id: id, merchantId: session.user.id });
+    const parcel = await Parcel.findOne({ _id: id, merchantId: session.id });
     if (!parcel) {
       return new NextResponse("Not Found or Unauthorized", { status: 404 });
     }
@@ -36,7 +36,7 @@ export async function DELETE(req, { params }) {
 export async function PATCH(req, { params }) {
   try {
     const session = await auth();
-    if (!session || session.user.role !== "MERCHANT") {
+    if (!session || session.role !== "MERCHANT") {
       return new NextResponse("Unauthorized", { status: 401 });
     }
     
@@ -44,7 +44,7 @@ export async function PATCH(req, { params }) {
     const body = await req.json();
     
     await connectToDatabase();
-    const parcel = await Parcel.findOne({ _id: id, merchantId: session.user.id });
+    const parcel = await Parcel.findOne({ _id: id, merchantId: session.id });
     
     if (!parcel) {
       return new NextResponse("Not Found or Unauthorized", { status: 404 });
@@ -60,7 +60,7 @@ export async function PATCH(req, { params }) {
       parcel.history.push({
         status: "Returned",
         message: "Merchant manually marked parcel as returned.",
-        updatedBy: session.user.id
+        updatedBy: session.id
       });
       await parcel.save();
       return NextResponse.json({ success: true, parcel });

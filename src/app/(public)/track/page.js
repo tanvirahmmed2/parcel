@@ -19,12 +19,11 @@ export default function GlobalTracker() {
       <div className="flex-1 flex flex-col items-center justify-center p-4 -mt-20">
         <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-full max-w-2xl text-center">
           <h1 className="text-5xl font-extrabold tracking-tight mb-4">Where is your package?</h1>
-          <p className="text-xl text-slate-500 mb-10">Enter your Percel Tracking ID below for real-time updates.</p>
+          <p className="text-xl text-slate-500 mb-10">Enter your Parcel Tracking ID below for real-time updates.</p>
           <form onSubmit={handleSearch} className="relative flex items-center shadow-2xl rounded-full bg-white transition hover:shadow-xl group border border-slate-200">
             <Search className="absolute left-6 w-7 h-7 text-slate-400 group-focus-within:text-black transition" />
             <input 
               type="text" 
-              placeholder="e.g. STEAD-ABC1234"
               value={trackingId}
               onChange={(e) => setTrackingId(e.target.value)}
               className="w-full py-6 pl-16 pr-32 text-xl font-mono tracking-widest bg-transparent outline-none rounded-full placeholder-slate-300"

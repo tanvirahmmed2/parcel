@@ -8,7 +8,7 @@ import { sendOtpEmail } from "@/lib/mail";
 export async function PATCH(req, { params }) {
   try {
     const session = await auth();
-    if (!session || (session.user.role !== "ADMIN" && session.user.role !== "RIDER")) {
+    if (!session || (session.role !== "ADMIN" && session.role !== "RIDER")) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
     const { id } = await params; 
@@ -31,7 +31,7 @@ export async function PATCH(req, { params }) {
     }
     parcel.history.push({
       status,
-      updatedBy: session.user.id,
+      updatedBy: session.id,
       message: note || `Status updated to ${status}`
     });
     if (status === "Out for Delivery") {
@@ -68,6 +68,7 @@ export async function PATCH(req, { params }) {
     }
     return NextResponse.json(parcel);
   } catch (error) {
+    if (error.message === "NEXT_REDIRECT") throw error;
     console.error("Update parcel status error:", error);
     return new NextResponse("Internal server error", { status: 500 });
   }

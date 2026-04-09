@@ -1,13 +1,15 @@
 "use client";
-import { Search, Package, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Package, ChevronLeft, ChevronRight, Eye } from "lucide-react";
 import useSWR from "swr";
 import { useState } from "react";
 import axios from "axios";
+import ReceiptModal from "@/components/shared/ReceiptModal";
 
 const fetcher = url => axios.get(url).then(res => res.data);
 
 export default function AdminParcelList() {
   const [page, setPage] = useState(1);
+  const [previewParcel, setPreviewParcel] = useState(null);
   const { data, error, isLoading } = useSWR(`/api/admin/parcels?page=${page}&limit=10`, fetcher, { 
     fallbackData: { parcels: [], totalPages: 1 } 
   });
@@ -26,7 +28,7 @@ export default function AdminParcelList() {
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
          <div className="p-4 border-b bg-slate-50 relative">
             <Search className="w-5 h-5 absolute left-7 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input placeholder="Search tracking IDs..." className="pl-12 pr-4 py-2 bg-white border border-slate-200 rounded-lg w-full max-w-sm outline-none focus:ring-2 focus:ring-black transition" />
+            <input className="pl-12 pr-4 py-2 bg-white border border-slate-200 rounded-lg w-full max-w-sm outline-none focus:ring-2 focus:ring-black transition" />
          </div>
          
          <table className="w-full text-left">
@@ -37,11 +39,12 @@ export default function AdminParcelList() {
                <th className="p-4 font-semibold">Receiver</th>
                <th className="p-4 font-semibold">Rider</th>
                <th className="p-4 font-semibold">Status</th>
+               <th className="p-4 font-semibold text-right">Actions</th>
              </tr>
            </thead>
            <tbody className="divide-y divide-slate-100 text-sm">
-             {isLoading ? <tr><td colSpan="5" className="text-center p-8 text-slate-400 font-medium">Loading network data...</td></tr> : 
-              parcels.length === 0 ? <tr><td colSpan="5" className="text-center p-8 text-slate-400 font-medium">No parcels found.</td></tr> :
+             {isLoading ? <tr><td colSpan="6" className="text-center p-8 text-slate-400 font-medium">Loading network data...</td></tr> : 
+              parcels.length === 0 ? <tr><td colSpan="6" className="text-center p-8 text-slate-400 font-medium">No parcels found.</td></tr> :
               parcels.map(p => (
                <tr key={p._id} className="hover:bg-slate-50 transition">
                  <td className="p-4 font-mono font-medium text-slate-900"><Package className="w-4 h-4 inline-block mr-2 text-slate-400"/> {p.trackingId}</td>
@@ -52,6 +55,11 @@ export default function AdminParcelList() {
                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
                      {p.status}
                    </span>
+                 </td>
+                 <td className="p-4 text-right">
+                    <button onClick={() => setPreviewParcel(p)} className="text-blue-600 hover:bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200 font-medium transition" title="Preview Receipt">
+                       <Eye className="w-4 h-4 inline" />
+                    </button>
                  </td>
                </tr>
              ))}
@@ -81,6 +89,12 @@ export default function AdminParcelList() {
            </div>
          </div>
       </div>
+
+      <ReceiptModal 
+        isOpen={!!previewParcel} 
+        onClose={() => setPreviewParcel(null)} 
+        parcel={previewParcel} 
+      />
     </div>
   );
 }

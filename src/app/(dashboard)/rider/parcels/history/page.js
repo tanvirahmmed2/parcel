@@ -1,14 +1,16 @@
 "use client";
-import { Search, Package, ChevronLeft, ChevronRight, CheckCircle2, XCircle } from "lucide-react";
+import { Search, Package, ChevronLeft, ChevronRight, CheckCircle2, XCircle, Eye } from "lucide-react";
 import useSWR from "swr";
 import { useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import ReceiptModal from "@/components/shared/ReceiptModal";
 
 const fetcher = url => axios.get(url).then(res => res.data);
 
 export default function RiderHistoryParcels() {
   const [page, setPage] = useState(1);
+  const [previewParcel, setPreviewParcel] = useState(null);
   const { data, error, isLoading } = useSWR(`/api/rider/parcels?type=history&page=${page}&limit=10`, fetcher, { 
     fallbackData: { parcels: [], pagination: { total: 0, pages: 1 } } 
   });
@@ -24,10 +26,10 @@ export default function RiderHistoryParcels() {
       </div>
       
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-         <div className="p-4 border-b bg-slate-50 relative">
+          <div className="p-4 border-b bg-slate-50 relative">
             <Search className="w-5 h-5 absolute left-7 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input placeholder="Search tracking IDs..." className="pl-12 pr-4 py-2 bg-white border border-slate-200 rounded-lg w-full max-w-sm outline-none focus:ring-2 focus:ring-black transition" />
-         </div>
+            <input className="pl-12 pr-4 py-2 bg-white border border-slate-200 rounded-lg w-full max-sm outline-none focus:ring-2 focus:ring-black transition" />
+          </div>
          
          <table className="w-full text-left">
            <thead className="bg-slate-50 border-b border-slate-100 text-xs uppercase tracking-wider text-slate-500">
@@ -36,16 +38,20 @@ export default function RiderHistoryParcels() {
                <th className="p-4 font-semibold">Customer</th>
                <th className="p-4 font-semibold">Completed</th>
                <th className="p-4 font-semibold">Status</th>
+               <th className="p-4 font-semibold text-right">Actions</th>
              </tr>
            </thead>
            <tbody className="divide-y divide-slate-100 text-sm">
-             {isLoading ? <tr><td colSpan="4" className="text-center p-8 text-slate-400 font-medium">Loading history logs...</td></tr> : 
-              parcels.length === 0 ? <tr><td colSpan="4" className="text-center p-8 text-slate-400 font-medium">No history recorded yet. Keep on driving!</td></tr> :
+             {isLoading ? <tr><td colSpan="5" className="text-center p-8 text-slate-400 font-medium">Loading history logs...</td></tr> : 
+              parcels.length === 0 ? <tr><td colSpan="5" className="text-center p-8 text-slate-400 font-medium">No history recorded yet. Keep on driving!</td></tr> :
               parcels.map(p => (
                <tr key={p._id} className="hover:bg-slate-50 transition text-slate-600">
                  <td className="p-4 font-mono font-medium text-slate-900">
-                    <Package className="w-4 h-4 inline-block mr-2 text-slate-400"/> 
-                    <Link href={`/track/${p.trackingId}`} className="hover:underline">{p.trackingId}</Link>
+                    <div className="flex items-center">
+                        <Package className="w-4 h-4 inline-block mr-2 text-slate-400"/> 
+                        <Link href={`/track/${p.trackingId}`} className="hover:underline">{p.trackingId}</Link>
+                    </div>
+                    <div className="text-xs text-slate-400 mt-1">{p.merchantId?.storeName}</div>
                  </td>
                  <td className="p-4">
                     <div className="font-medium text-slate-800">{p.receiverName}</div>
@@ -66,6 +72,11 @@ export default function RiderHistoryParcels() {
                             {p.status}
                         </span>
                     )}
+                 </td>
+                 <td className="p-4 text-right">
+                    <button onClick={() => setPreviewParcel(p)} className="text-blue-600 hover:bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200 font-medium transition" title="Preview Receipt">
+                       <Eye className="w-4 h-4 inline" />
+                    </button>
                  </td>
                </tr>
               ))}
@@ -95,6 +106,12 @@ export default function RiderHistoryParcels() {
            </div>
          </div>
       </div>
+
+      <ReceiptModal 
+        isOpen={!!previewParcel} 
+        onClose={() => setPreviewParcel(null)} 
+        parcel={previewParcel} 
+      />
     </div>
   );
 }

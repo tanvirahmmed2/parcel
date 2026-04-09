@@ -19,10 +19,13 @@ export default function TrackingPage() {
   useEffect(() => {
     async function fetchTracking() {
       try {
-        const res = await axios.get(`/api/track/${trackingId}`);
-        const data = res.data;
-        setParcel(data);
-        document.title = `Tracking ${trackingId} - Percel`;
+        const { data } = await axios.get(`/api/track/${trackingId}`);
+        if (data.success) {
+          setParcel(data.data);
+          document.title = `Tracking ${trackingId} - Parcel`;
+        } else {
+          setError(data.message || "Parcel not found");
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -49,7 +52,7 @@ export default function TrackingPage() {
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-md mx-auto">
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Percel Tracker</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Parcel Tracker</h1>
           <p className="text-gray-500 mt-2">Tracking ID: <span className="font-mono text-gray-800 bg-gray-200 px-2 rounded">{parcel.trackingId}</span></p>
         </div>
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6 mb-6 relative">
@@ -58,7 +61,7 @@ export default function TrackingPage() {
                const isActive = parcel.status === step.status;
                const isCompleted = isDelivered || STEPS.findIndex(s => s.status === parcel.status) > idx;
                const Icon = step.icon;
-               const historyEvent = parcel.history.find(h => h.status === step.status && step.status !== "Pending");
+               const historyEvent = (parcel.history || []).find(h => h.status === step.status && step.status !== "Pending");
                return (
                  <div key={idx} className="relative flex items-start gap-4">
                    {}

@@ -4,7 +4,7 @@ import { User } from "@/models/User";
 import bcrypt from "bcryptjs";
 import { signToken } from "@/lib/jwt";
 import { sendMail } from "@/lib/mail";
-import { createSession } from "@/lib/auth-shield";
+import { createSession, requireAuth as auth } from "@/lib/auth-shield";
 
 export async function POST(req) {
   try {
@@ -40,8 +40,8 @@ export async function POST(req) {
     try {
       await sendMail({
         to: normalizedEmail,
-        subject: "Verify Your Percel Account",
-        htmlContent: `<h2>Welcome to Percel, ${name}!</h2>
+        subject: "Verify Your Parcel Account",
+        htmlContent: `<h2>Welcome to Parcel, ${name}!</h2>
         <p>Please click the link below to verify your email. Once verified, your account will enter the approval queue.</p>
         <a href="${verificationUrl}" style="display:inline-block;padding:12px 24px;background-color:#0f172a;color:#ffffff;text-decoration:none;border-radius:8px;">Verify Email</a>`
       });
@@ -77,7 +77,7 @@ export async function PATCH(req) {
     const data = await req.json();
     await connectToDatabase();
     
-    const user = await User.findById(session.user.id);
+    const user = await User.findById(session.id);
     if (!user) return new NextResponse("Not Found", { status: 404 });
     
     if (data.name) user.name = data.name;

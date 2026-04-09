@@ -69,7 +69,7 @@ export default function HubManagement() {
       <Card className="border-slate-200 overflow-hidden shadow-sm">
          <div className="p-4 border-b bg-slate-50 relative">
             <Search className="w-5 h-5 absolute left-7 top-1/2 -translate-y-1/2 text-slate-400" />
-            <Input placeholder="Search records..." className="pl-12 w-full max-w-sm" />
+            <Input className="pl-12 w-full max-w-sm" />
          </div>
          <div className="overflow-x-auto">
             <table className="w-full text-left">
@@ -136,7 +136,6 @@ export default function HubManagement() {
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
-                        placeholder="e.g. Uttara Hub Manager"
                     />
                 </div>
                 <div className="space-y-2">
@@ -146,7 +145,6 @@ export default function HubManagement() {
                         type="email"
                         value={formData.email}
                         onChange={(e) => setFormData({...formData, email: e.target.value})}
-                        placeholder="manager@hub.com"
                     />
                 </div>
                 <div className="space-y-2">
@@ -154,7 +152,6 @@ export default function HubManagement() {
                     <Input 
                         value={formData.phone}
                         onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        placeholder="+880..."
                     />
                 </div>
                 <div className="space-y-2">
@@ -164,7 +161,6 @@ export default function HubManagement() {
                         type="password"
                         value={formData.password}
                         onChange={(e) => setFormData({...formData, password: e.target.value})}
-                        placeholder="••••••••"
                     />
                 </div>
                 <Button type="submit" className="w-full h-12 text-lg font-bold" disabled={loading}>
